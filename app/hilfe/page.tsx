@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import { Header } from "@/components/header"
-import { ChatPanel } from "@/components/chat-panel"
+// ChatPanel disabled — requires OpenAI API key
+// import { ChatPanel } from "@/components/chat-panel"
 import {
   Accordion,
   AccordionContent,
@@ -70,7 +71,7 @@ export default function HilfePage() {
             Hilfe & FAQ
           </h1>
           <p className="text-base text-muted-foreground text-pretty">
-            Antworten auf häufige Fragen — oder chatte direkt mit dem Assistenten unten.
+            Antworten auf häufige Fragen rund um SINator.
           </p>
         </div>
 
@@ -113,14 +114,6 @@ export default function HilfePage() {
             ))}
           </Accordion>
         </Card>
-
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <MessageCircle className="size-4 text-muted-foreground" />
-            <h2 className="font-semibold">Live-Chat mit dem Assistenten</h2>
-          </div>
-          <ChatPanel />
-        </div>
       </main>
     </div>
   )
