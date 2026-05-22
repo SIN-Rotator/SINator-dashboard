@@ -2,8 +2,7 @@
 
 import * as React from "react"
 import { Header } from "@/components/header"
-// ChatPanel disabled — requires OpenAI API key
-// import { ChatPanel } from "@/components/chat-panel"
+import { ChatPanel } from "@/components/chat-panel"
 import {
   Accordion,
   AccordionContent,
