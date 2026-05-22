@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { StatusBar } from "@/components/status-bar"
 import { RotationPanel, type LogEntry } from "@/components/rotation-panel"
@@ -10,6 +11,8 @@ import { useSinator } from "@/hooks/use-sinator"
 export default function RotationPage() {
   const { health, browser, stats, connected, refresh } = useSinator()
   const [logs, setLogs] = React.useState<LogEntry[]>([])
+  const searchParams = useSearchParams()
+  const autoStart = searchParams.get("auto") === "1"
 
   function addLog(e: LogEntry) {
     setLogs((prev) => [...prev.slice(-200), e])
@@ -27,7 +30,7 @@ export default function RotationPage() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
-          <RotationPanel onLog={addLog} onRotationDone={refresh} />
+          <RotationPanel onLog={addLog} onRotationDone={refresh} autoStart={autoStart} />
           <LiveLog entries={logs} onClear={() => setLogs([])} />
         </div>
       </main>

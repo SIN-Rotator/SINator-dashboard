@@ -168,7 +168,8 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       setPwOpen(true)
       return
     }
-    runRotations(stored, count)
+    // Open rotation in new tab — doesn't block dashboard
+    window.open("/rotation?auto=1", "_blank")
   }
 
   function submitPassword() {
