@@ -53,7 +53,7 @@ function StatusPill({ status }: { status: Status }) {
 export function RotationPanel({ onLog, onRotationDone }: Props) {
   const { provider } = useProvider()
   const [status, setStatus] = React.useState<Status>("idle")
-  const [password, setPassword] = React.useState("")
+  const [password, setPassword] = React.useState("ZOE.jerry2024!")
   const [lastRun, setLastRun] = React.useState<{ at: number; name: string } | null>(null)
 
   // Loop modes

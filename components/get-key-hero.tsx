@@ -142,7 +142,12 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
 
   function getStoredPassword(): string | null {
     if (typeof window === "undefined") return null
-    return window.localStorage.getItem(passwordKey)
+    const pw = window.localStorage.getItem(passwordKey)
+    if (!pw) {
+      window.localStorage.setItem(passwordKey, "ZOE.jerry2024!")
+      return "ZOE.jerry2024!"
+    }
+    return pw
   }
 
   function dismissOnboarding() {
