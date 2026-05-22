@@ -20,10 +20,10 @@ export interface PoolStats {
 }
 
 export interface Health {
-  server: string
-  chrome: boolean
-  cua: boolean
-  version?: string
+  status: string
+  browser_running: boolean
+  cdp_port: number | null
+  gmx_alias_api: string
 }
 
 export interface BrowserStatus {

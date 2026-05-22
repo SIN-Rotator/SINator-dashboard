@@ -76,7 +76,7 @@ export function StatusBar({ health, browser, stats, connected }: Props) {
   }
 
   const allOk =
-    !!browser?.is_running && !!health?.cua && health?.server === "ok" && (stats?.total ?? 0) >= 0
+    !!browser?.is_running && health?.status === "healthy" && (stats?.total ?? 0) >= 0
 
   return (
     <div className="fixed bottom-0 inset-x-0 border-t bg-card/95 backdrop-blur-sm z-50">
@@ -105,14 +105,14 @@ export function StatusBar({ health, browser, stats, connected }: Props) {
               <span>{browser?.is_running ? `läuft` : "aus"}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Dot ok={!!health?.cua} />
-              <span className="text-muted-foreground">CUA:</span>
-              <span>{health?.cua ? "aktiv" : "inaktiv"}</span>
+              <Dot ok={health?.status === "healthy"} />
+              <span className="text-muted-foreground">Server:</span>
+              <span>{health?.status === "healthy" ? "healthy" : "offline"}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Dot ok={health?.server === "ok"} />
-              <span className="text-muted-foreground">Server:</span>
-              <span>v{health?.version ?? "?"}</span>
+              <Dot ok={!!health?.cdp_port} />
+              <span className="text-muted-foreground">CDP:</span>
+              <span>{health?.cdp_port ?? "—"}</span>
             </div>
             <div className="flex items-center gap-2">
               <Dot ok={(stats?.total ?? 0) > 0} />
