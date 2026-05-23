@@ -24,7 +24,6 @@ export interface LogEntry {
 interface Props {
   onLog: (entry: LogEntry) => void
   onRotationDone: () => void
-  autoStart?: boolean
 }
 
 function StatusPill({ status }: { status: Status }) {
@@ -51,19 +50,11 @@ function StatusPill({ status }: { status: Status }) {
   )
 }
 
-export function RotationPanel({ onLog, onRotationDone, autoStart }: Props) {
+export function RotationPanel({ onLog, onRotationDone }: Props) {
   const { provider } = useProvider()
   const [status, setStatus] = React.useState<Status>("idle")
-  const [password, setPassword] = React.useState("ZOE.jerry2024!")
+  const [password, setPassword] = React.useState("")
   const [lastRun, setLastRun] = React.useState<{ at: number; name: string } | null>(null)
-
-  // Auto-start when opened from "API Key holen" button
-  React.useEffect(() => {
-    if (autoStart && password && status === "idle") {
-      startSingle()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoStart, password])
 
   // Loop modes
   const [loopMode, setLoopMode] = React.useState<"single" | "interval" | "target">("single")

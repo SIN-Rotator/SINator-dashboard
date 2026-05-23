@@ -13,7 +13,6 @@ import { ChevronsUpDown, Check } from "lucide-react"
 import { useProvider } from "@/components/provider-context"
 import { PROVIDER_LIST } from "@/lib/providers"
 import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
 
 export function ProviderSwitcher() {
   const { provider, providerId, setProviderId } = useProvider()
@@ -50,11 +49,6 @@ export function ProviderSwitcher() {
                 <div className="flex items-center gap-2">
                   <span className="font-medium text-sm">{p.label}</span>
                   {active && <Check className="size-3.5 text-primary" />}
-                  {!p.available && (
-                    <Badge variant="outline" className="text-[10px] py-0 h-4">
-                      Soon
-                    </Badge>
-                  )}
                 </div>
                 <p className="text-xs text-muted-foreground line-clamp-1">{p.description}</p>
               </div>

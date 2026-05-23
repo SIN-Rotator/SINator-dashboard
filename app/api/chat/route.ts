@@ -5,7 +5,7 @@ export const maxDuration = 60
 
 const BACKEND = process.env.SINATOR_BACKEND_URL || "http://localhost:8000"
 const FIREWORKS_MODEL =
-  process.env.FIREWORKS_MODEL || "accounts/fireworks/models/deepseek-v4-pro"
+  process.env.FIREWORKS_MODEL || "accounts/fireworks/models/llama-v3p1-70b-instruct"
 
 const SYSTEM_PROMPT = `Du bist der freundliche Hilfe-Assistent für SINator — ein Tool, das automatisch Fireworks AI API Keys erstellt.
 
@@ -74,10 +74,14 @@ function errorStream(message: string): Response {
 
 async function fetchPoolKey(): Promise<string | null> {
   try {
-    const r = await fetch(`${BACKEND}/api/v1/pool/key`, { cache: "no-store" })
+    const r = await fetch(`${BACKEND}/api/v1/pool/stats`, { cache: "no-store" })
     if (!r.ok) return null
-    const data = await r.json()
-    return data.api_key ?? null
+    const data = (await r.json()) as {
+      keys?: Array<{ id: string; used?: boolean; api_key?: string; key?: string }>
+    }
+    const keys = data.keys || []
+    const available = keys.find((k) => !k.used && (k.api_key || k.key))
+    return (available?.api_key || available?.key) ?? null
   } catch {
     return null
   }

@@ -6,7 +6,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Rotation takes ~200s — increase proxy timeout
   experimental: {
     proxyTimeout: 300_000,
   },

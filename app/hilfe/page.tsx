@@ -70,7 +70,7 @@ export default function HilfePage() {
             Hilfe & FAQ
           </h1>
           <p className="text-base text-muted-foreground text-pretty">
-            Antworten auf häufige Fragen rund um SINator.
+            Antworten auf häufige Fragen — oder chatte direkt mit dem Assistenten unten.
           </p>
         </div>
 
@@ -113,6 +113,14 @@ export default function HilfePage() {
             ))}
           </Accordion>
         </Card>
+
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <MessageCircle className="size-4 text-muted-foreground" />
+            <h2 className="font-semibold">Live-Chat mit dem Assistenten</h2>
+          </div>
+          <ChatPanel />
+        </div>
       </main>
     </div>
   )

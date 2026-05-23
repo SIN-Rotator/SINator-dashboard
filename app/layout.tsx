@@ -4,7 +4,6 @@ import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ProviderContextProvider } from "@/components/provider-context"
-import { AuthGate } from "@/components/auth-gate" "@/components/provider-context"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -28,7 +27,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <ProviderContextProvider>
-            {<AuthGate>{children}</AuthGate>}
+            {children}
             <Toaster richColors position="top-right" />
           </ProviderContextProvider>
         </ThemeProvider>
