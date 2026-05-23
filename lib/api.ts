@@ -44,6 +44,20 @@ export interface RotationResult {
   error?: string
 }
 
+function getToken() {
+  if (typeof window === "undefined") return null
+  return window.localStorage.getItem("sinator.auth_token")
+}
+
+async function apiFetch(url: string, opts: RequestInit = {}): Promise<Response> {
+  const token = getToken()
+  const headers: Record<string, string> = {
+    ...((opts.headers as Record<string, string>) || {}),
+  }
+  if (token) headers["Authorization"] = `Bearer ${token}`
+  return fetch(url, { ...opts, headers })
+}
+
 async function handleJson<T>(r: Response): Promise<T> {
   if (!r.ok) {
     const text = await r.text().catch(() => r.statusText)
@@ -54,23 +68,23 @@ async function handleJson<T>(r: Response): Promise<T> {
 
 // Globale Endpoints (nicht provider-spezifisch)
 export async function getHealth(): Promise<Health> {
-  const r = await fetch("/health", { cache: "no-store" })
+  const r = await apiFetch("/health", { cache: "no-store" })
   return handleJson<Health>(r)
 }
 
 export async function getBrowserStatus(): Promise<BrowserStatus> {
-  const r = await fetch("/api/v1/browser/status", { cache: "no-store" })
+  const r = await apiFetch("/api/v1/browser/status", { cache: "no-store" })
   return handleJson<BrowserStatus>(r)
 }
 
 // Provider-spezifische Endpoints
 export async function getPoolStats(apiPrefix: string): Promise<PoolStats> {
-  const r = await fetch(`${apiPrefix}/pool/stats`, { cache: "no-store" })
+  const r = await apiFetch(`${apiPrefix}/pool/stats`, { cache: "no-store" })
   return handleJson<PoolStats>(r)
 }
 
 export async function startRotation(apiPrefix: string, password: string): Promise<RotationResult> {
-  const r = await fetch(`${apiPrefix}/rotation/full`, {
+  const r = await apiFetch(`${apiPrefix}/rotation/full`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ fireworks_password: password, save_to_pool: true }),
@@ -79,14 +93,14 @@ export async function startRotation(apiPrefix: string, password: string): Promis
 }
 
 export async function markKeyUsed(apiPrefix: string, keyId: string): Promise<{ status: string }> {
-  const r = await fetch(`${apiPrefix}/pool/use?key_id=${encodeURIComponent(keyId)}`, {
+  const r = await apiFetch(`${apiPrefix}/pool/use?key_id=${encodeURIComponent(keyId)}`, {
     method: "POST",
   })
   return handleJson(r)
 }
 
 export async function deleteKey(apiPrefix: string, keyId: string): Promise<{ status: string }> {
-  const r = await fetch(`${apiPrefix}/pool/${encodeURIComponent(keyId)}`, {
+  const r = await apiFetch(`${apiPrefix}/pool/${encodeURIComponent(keyId)}`, {
     method: "DELETE",
   })
   return handleJson(r)
@@ -96,7 +110,7 @@ export async function addKey(
   apiPrefix: string,
   payload: Record<string, unknown>,
 ): Promise<{ status: string }> {
-  const r = await fetch(`${apiPrefix}/pool/add`, {
+  const r = await apiFetch(`${apiPrefix}/pool/add`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

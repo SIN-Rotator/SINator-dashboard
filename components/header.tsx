@@ -10,6 +10,7 @@ import { useProvider } from "@/components/provider-context"
 const nav = [
   { href: "/", label: "Dashboard" },
   { href: "/rotation", label: "Rotation" },
+  { href: "/setup", label: "Setup" },
   { href: "/hilfe", label: "Hilfe" },
 ]
 
