@@ -28,11 +28,12 @@
   h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
   .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
 
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 20px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 8px; }
   .stat-num { font-size: 1.6rem; font-weight: 800; }
   .stat-num.available { color: var(--green); }
   .stat-num.used { color: var(--muted); }
+  .stat-num.leased { color: var(--orange); }
   .stat-num.total { color: var(--orange); }
   .stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
 
@@ -102,6 +103,7 @@
     <div class="stat"><div class="stat-num total" id="totalKeys">-</div><div class="stat-label">Gesamt</div></div>
     <div class="stat"><div class="stat-num available" id="availKeys">-</div><div class="stat-label">Verfügbar</div></div>
     <div class="stat"><div class="stat-num used" id="usedKeys">-</div><div class="stat-label">Benutzt</div></div>
+    <div class="stat"><div class="stat-num leased" id="leasedKeys">-</div><div class="stat-label">Gemietet</div></div>
   </div>
 
   <button class="btn" id="getKeyBtn" onclick="getKey()">
@@ -156,6 +158,7 @@ async function refreshStatus() {
     document.getElementById("totalKeys").textContent = pool.total ?? "-"
     document.getElementById("availKeys").textContent = pool.available ?? "-"
     document.getElementById("usedKeys").textContent = pool.used ?? "-"
+    document.getElementById("leasedKeys").textContent = pool.leased ?? "-"
     if (pool.available > 0) {
       document.getElementById("poolStatus").textContent = pool.available + " Keys verfügbar"
     } else if (pool.total > 0) {
