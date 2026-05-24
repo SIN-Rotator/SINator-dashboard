@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -8,12 +9,6 @@ const nextConfig = {
   },
   experimental: {
     proxyTimeout: 300_000,
-  },
-  async rewrites() {
-    return [
-      { source: "/api/:path*", destination: "http://localhost:8000/api/:path*" },
-      { source: "/health", destination: "http://localhost:8000/health" },
-    ]
   },
 }
 
