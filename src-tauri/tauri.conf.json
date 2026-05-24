@@ -12,11 +12,12 @@
   "app": {
     "windows": [
       {
-        "title": "SINator — Fireworks AI Key Dashboard",
-        "width": 1200,
-        "height": 800,
-        "resizable": true,
-        "fullscreen": false
+        "title": "SINator — API Key Pool",
+        "width": 500,
+        "height": 700,
+        "resizable": false,
+        "fullscreen": false,
+        "url": "/pool-app.html"
       }
     ],
     "security": {
