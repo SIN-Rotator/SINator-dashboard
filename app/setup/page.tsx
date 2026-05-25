@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { getConfig, saveConfig, ConfigData } from "@/lib/api"
-import { useProvider } from "@/components/provider-context"
 import { Shield, Mail, Key, CheckCircle2, Loader2, Eye, EyeOff, Link, Terminal, Code, Globe, Monitor } from "lucide-react"
 
+const CONFIG_BACKEND = "http://localhost:8000"
+const CONFIG_PREFIX = "/api/v1"
+
 export default function SetupPage() {
-  const { provider } = useProvider()
   const [gmxEmail, setGmxEmail] = useState("")
   const [gmxPassword, setGmxPassword] = useState("")
   const [fireworksPassword, setFireworksPassword] = useState("")
@@ -24,7 +25,7 @@ export default function SetupPage() {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    getConfig(provider.apiPrefix, provider.backendUrl).then((cfg: ConfigData) => {
+    getConfig(CONFIG_PREFIX, CONFIG_BACKEND).then((cfg: ConfigData) => {
       setGmxEmail(cfg.gmx_email)
       setGmxPassword(cfg.gmx_password)
       setFireworksPassword(cfg.fireworks_password)
@@ -44,11 +45,11 @@ export default function SetupPage() {
     }
     setSaving(true)
     try {
-      await saveConfig(provider.apiPrefix, {
+      await saveConfig(CONFIG_PREFIX, {
         gmx_email: gmxEmail,
         gmx_password: gmxPassword,
         fireworks_password: fireworksPassword,
-      }, provider.backendUrl)
+      }, CONFIG_BACKEND)
       setSaved(true)
       toast.success("Zugangsdaten gespeichert")
     } catch {
