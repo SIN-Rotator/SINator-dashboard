@@ -66,6 +66,8 @@ function StatusBadge({ status }: { status: "available" | "used" | "suspended" })
 
 export function KeyTable({ keys, onMutate }: Props) {
   const { provider } = useProvider()
+  const noun = provider.itemNoun
+  const nounPlural = provider.itemNounPlural
   const [sortKey, setSortKey] = React.useState<SortKey>("created_at")
   const [sortDir, setSortDir] = React.useState<"asc" | "desc">("desc")
   const [filter, setFilter] = React.useState<Filter>("all")
@@ -124,9 +126,9 @@ export function KeyTable({ keys, onMutate }: Props) {
         } else {
           await navigator.clipboard.writeText(value)
         }
-        toast.success(`API Key kopiert`, { description: k.key_name })
+        toast.success(`${noun} kopiert`, { description: k.key_name })
       } else {
-        toast.error("Key nicht verfügbar")
+        toast.error(`${noun} nicht verfügbar`)
       }
     } catch (e) {
       toast.error("Kopieren fehlgeschlagen", { description: (e as Error).message })
@@ -139,10 +141,10 @@ export function KeyTable({ keys, onMutate }: Props) {
     setBusy(k.id)
     try {
       await markKeyUsed(provider.backendUrl, provider.apiPrefix, k.id)
-      toast.success("Marked as used", { description: k.key_name })
+      toast.success("Als verbraucht markiert", { description: k.key_name })
       onMutate()
     } catch (e) {
-      toast.error("Failed to mark used", { description: (e as Error).message })
+      toast.error("Fehler", { description: (e as Error).message })
     } finally {
       setBusy(null)
     }
@@ -155,10 +157,10 @@ export function KeyTable({ keys, onMutate }: Props) {
     setBusy(k.id)
     try {
       await deleteKey(provider.backendUrl, provider.apiPrefix, k.id)
-      toast.success("Key deleted", { description: k.key_name })
+      toast.success(`${noun} gelöscht`, { description: k.key_name })
       onMutate()
     } catch (e) {
-      toast.error("Failed to delete", { description: (e as Error).message })
+      toast.error("Löschen fehlgeschlagen", { description: (e as Error).message })
     } finally {
       setBusy(null)
     }
@@ -180,7 +182,7 @@ export function KeyTable({ keys, onMutate }: Props) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            placeholder="Search by ID, email, or key name…"
+            placeholder={`Suchen nach ID, Email oder ${noun.toLowerCase()}…`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -191,10 +193,10 @@ export function KeyTable({ keys, onMutate }: Props) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="available">Available</SelectItem>
-            <SelectItem value="used">Used</SelectItem>
-            <SelectItem value="suspended">Suspended</SelectItem>
+            <SelectItem value="all">Alle</SelectItem>
+            <SelectItem value="available">Verfügbar</SelectItem>
+            <SelectItem value="used">Verbraucht</SelectItem>
+            <SelectItem value="suspended">Gesperrt</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -210,22 +212,22 @@ export function KeyTable({ keys, onMutate }: Props) {
                 <SortBtn label="Email" k="alias_email" />
               </TableHead>
               <TableHead>
-                <SortBtn label="Key Name" k="key_name" />
+                <SortBtn label={noun} k="key_name" />
               </TableHead>
               <TableHead>
                 <SortBtn label="Status" k="status" />
               </TableHead>
               <TableHead>
-                <SortBtn label="Created" k="created_at" />
+                <SortBtn label="Erstellt" k="created_at" />
               </TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right">Aktionen</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
-                  No keys match the current filter.
+                  Keine {nounPlural.toLowerCase()} gefunden.
                 </TableCell>
               </TableRow>
             ) : (
@@ -248,7 +250,7 @@ export function KeyTable({ keys, onMutate }: Props) {
                         size="icon-sm"
                         variant="ghost"
                         onClick={() => copyKey(k)}
-                        title="Copy key"
+                        title={`${noun} kopieren`}
                       >
                         <Copy className="size-4" />
                       </Button>
@@ -257,7 +259,7 @@ export function KeyTable({ keys, onMutate }: Props) {
                         variant="ghost"
                         disabled={busy === k.id || k.used}
                         onClick={() => onMarkUsed(k)}
-                        title="Mark as used"
+                        title="Als verbraucht markieren"
                       >
                         <CheckCheck className="size-4" />
                       </Button>
@@ -266,7 +268,7 @@ export function KeyTable({ keys, onMutate }: Props) {
                         variant="ghost"
                         disabled={busy === k.id}
                         onClick={() => setPendingDelete(k)}
-                        title="Delete"
+                        title="Löschen"
                         className="text-destructive hover:text-destructive"
                       >
                         <Trash2 className="size-4" />
@@ -283,19 +285,18 @@ export function KeyTable({ keys, onMutate }: Props) {
       <AlertDialog open={!!pendingDelete} onOpenChange={(o) => !o && setPendingDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this key?</AlertDialogTitle>
+            <AlertDialogTitle>Diesen {noun.toLowerCase()} löschen?</AlertDialogTitle>
             <AlertDialogDescription>
-              {pendingDelete?.key_name} ({pendingDelete?.alias_email}) will be permanently
-              removed from the pool.
+              {pendingDelete?.key_name} ({pendingDelete?.alias_email}) wird permanent aus dem Pool entfernt.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Abbrechen</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               className="bg-destructive text-white hover:bg-destructive/90"
             >
-              Delete
+              Löschen
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
