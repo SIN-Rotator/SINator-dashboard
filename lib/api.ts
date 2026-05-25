@@ -2,9 +2,7 @@
 // In dev mode (Next.js): proxied via rewrites → relative paths
 // In Tauri mode: direct call to localhost:8000
 
-const BACKEND_URL = typeof window !== "undefined" && "__TAURI_INTERNALS__" in window
-  ? "http://localhost:8000"
-  : ""
+const BACKEND_URL = "http://localhost:8000"
 
 function api(path: string): string {
   return `${BACKEND_URL}${path}`
@@ -122,4 +120,27 @@ export async function addKey(
     body: JSON.stringify(payload),
   })
   return handleJson(r)
+}
+
+export interface ConfigData {
+  gmx_email: string
+  gmx_password: string
+  fireworks_password: string
+}
+
+export async function getConfig(apiPrefix: string): Promise<ConfigData> {
+  const r = await fetch(api(`${apiPrefix}/config`), { cache: "no-store" })
+  return handleJson(r) as Promise<ConfigData>
+}
+
+export async function saveConfig(
+  apiPrefix: string,
+  data: { gmx_email: string; gmx_password: string; fireworks_password: string },
+): Promise<ConfigData> {
+  const r = await fetch(api(`${apiPrefix}/config`), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  })
+  return handleJson(r) as Promise<ConfigData>
 }

@@ -27,14 +27,15 @@ pnpm dev
 |-------|-----|----------|
 | Dashboard | `/` | Pool-Stats, Key-Table, Quick-Actions, "API Key holen" |
 | Rotation | `/rotation` | Einzel-/Loop-Modus, Live-Protokolle |
-| Hilfe | `/hilfe` | FAQ + KI-Chat-Assistent (nutzt Pool-Keys!) |
+| Hilfe | `/hilfe` | FAQ + KI-Chat-Assistent (gpt-oss-120b via Pool-Proxy) |
+| Setup | `/setup` | GMX + Fireworks Zugangsdaten konfigurieren |
 
 ## Features
 
 - **Key-Table**: Sortier-/Filterbar, Copy-to-Clipboard, Mark-Used, Delete
 - **Rotation Panel**: Single / Interval / Target-Count Loop mit Live-Log
 - **Pool-Warnung**: Roter Banner wenn weniger als 3 Keys verfügbar
-- **Chat-Assistent**: Nutzt `deepseek-v4-pro` via Fireworks API mit automatischem Key aus dem Pool
+- **Chat-Assistent**: Rust-Command `chat_send` via Pool-Proxy (gpt-oss-120b), Live-Pool-Stats im System-Prompt
 - **Status-Leiste**: Chrome-Backend-Status, Pool-Größe, Server-Version
 - **Dark Mode**: System-Theme Auto-Detect
 
@@ -42,8 +43,8 @@ pnpm dev
 
 - Next.js 16 + React 19
 - TailwindCSS 4 + shadcn/ui
-- `@ai-sdk/openai-compatible` für Fireworks Chat
-- Vercel AI SDK für Streaming-Chat
+- Tauri v2 (Rust + WebView, Clipboard + Chat Commands)
+- Rust: `reqwest`, `tokio` für Chat-Proxy-Integration
 
 ## API Proxy
 

@@ -1,19 +1,4 @@
-import { streamText, convertToModelMessages, type UIMessage } from "ai"
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible"
-
-export const maxDuration = 60
-
-const BACKEND = process.env.SINATOR_BACKEND_URL || "http://localhost:8000"
-const FIREWORKS_MODEL =
-  process.env.FIREWORKS_MODEL || "accounts/fireworks/models/gpt-oss-120b"
-
-const fireworks = createOpenAICompatible({
-  name: "fireworks",
-  baseURL: `${BACKEND}:8888/inference/v1`,
-  apiKey: "pool",
-})
-
-const BASE_KNOWLEDGE = `Du bist der SINator-Hilfe-Assistent. Antworte IMMER auf Deutsch. Sei kurz, freundlich und konkret. Verwende Markdown fuer Code und Listen. Keine Emojis.
+Du bist der SINator-Hilfe-Assistent. Antworte IMMER auf Deutsch. Sei kurz, freundlich und konkret. Verwende Markdown fuer Code und Listen. Keine Emojis.
 
 == SINATOR ARCHITEKTUR ==
 SINator ist ein automatisierter Fireworks AI API-Key-Generator. Er erstellt GMX-Email-Aliases, registriert Fireworks-Accounts damit, bestaetigt die Email per OTP, und generiert API-Keys. Pro Key: ~3 Minuten.
@@ -52,10 +37,9 @@ Komponenten:
 - Landing Page: https://sinator.delqhi.com
 - API-Docs: https://sinator.delqhi.com/api/v1/docs
 - Pool-Proxy: https://sinator.delqhi.com/inference/v1/
-- Auth-Token: Nicht oeffentlich teilen!
 
 == VERFUEGBARE MODELLE (Serverless) ==
-accounts/fireworks/models/gpt-oss-120b   ($0.15/M input, $0.60/M output)
+accounts/fireworks/models/gpt-oss-120b   ($0.15/M input, $0.60/M output) — billigstes
 accounts/fireworks/models/kimi-k2p5      ($0.95/M)
 accounts/fireworks/models/kimi-k2p6      ($0.95/M)
 accounts/fireworks/models/glm-5p1        ($1.40/M)
@@ -81,89 +65,21 @@ R = Key holen, C = letzten Key kopieren
 - Passwoerter werden lokal in config.json gespeichert
 
 == KEY NUTZUNG ==
-Via Pool-Proxy:
-curl https://sinator.delqhi.com/inference/v1/chat/completions \\
-  -H "Authorization: Bearer pool" \\
+Via Pool-Proxy (lokal):
+curl http://localhost:8888/inference/v1/chat/completions \
+  -H "Authorization: Bearer pool" \
+  -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
+
+Via Tunnel (von ueberall):
+curl https://sinator.delqhi.com/inference/v1/chat/completions \
+  -H "Authorization: Bearer pool" \
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Direkt mit eigenem Key:
-curl https://api.fireworks.ai/inference/v1/chat/completions \\
-  -H "Authorization: Bearer DEIN_KEY" \\
+curl https://api.fireworks.ai/inference/v1/chat/completions \
+  -H "Authorization: Bearer DEIN_KEY" \
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Hinweis: Du selbst laeuft mit einem Key aus dem SINator-Pool via den Pool-Proxy auf :8888.
 
-Wenn jemand eine Frage stellt die nichts mit SINator zu tun hat, beantworte sie trotzdem kurz und hilfreich.`
-
-function errorStream(message: string): Response {
-  const encoder = new TextEncoder()
-  const stream = new ReadableStream({
-    start(controller) {
-      const id = "err-" + Date.now()
-      const send = (obj: unknown) =>
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`))
-      send({ type: "start" })
-      send({ type: "start-step" })
-      send({ type: "text-start", id })
-      send({ type: "text-delta", id, delta: message })
-      send({ type: "text-end", id })
-      send({ type: "finish-step" })
-      send({ type: "finish" })
-      controller.enqueue(encoder.encode("data: [DONE]\n\n"))
-      controller.close()
-    },
-  })
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache, no-transform",
-      "x-vercel-ai-ui-message-stream": "v1",
-    },
-  })
-}
-
-async function getLiveContext(): Promise<string> {
-  try {
-    const [statsR, healthR] = await Promise.all([
-      fetch(`${BACKEND}/api/v1/pool/stats`, { cache: "no-store" }),
-      fetch(`${BACKEND}/health`, { cache: "no-store" }),
-    ])
-    const stats = statsR.ok ? await statsR.json() : null
-    const health = healthR.ok ? await healthR.json() : null
-
-    let ctx = "\n== LIVE-STATUS (jetzt) ==\n"
-    if (stats) {
-      ctx += `Pool: ${stats.available} verfuegbar / ${stats.total} gesamt / ${stats.used} verbraucht / ${stats.suspended || 0} gesperrt\n`
-    } else {
-      ctx += "Pool: Offline\n"
-    }
-    if (health) {
-      ctx += `Backend: Online | Chrome: ${health.chrome ? "laeuft" : "aus"} | CUA: ${health.cua ? "laeuft" : "aus"}\n`
-    } else {
-      ctx += "Backend: Offline\n"
-    }
-    return ctx
-  } catch {
-    return "\n== LIVE-STATUS ==\nBackend: Offline\n"
-  }
-}
-
-export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json()
-  const liveContext = await getLiveContext()
-  const systemPrompt = BASE_KNOWLEDGE + liveContext
-
-  try {
-    const result = streamText({
-      model: fireworks(FIREWORKS_MODEL),
-      system: systemPrompt,
-      messages: await convertToModelMessages(messages),
-    })
-    return result.toUIMessageStreamResponse()
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : String(e)
-    return errorStream(
-      "Fehler beim Chat: " + msg + ". Ist der Pool-Proxy auf :8888 aktiv?",
-    )
-  }
-}
+Wenn jemand eine Frage stellt die nichts mit SINator zu tun hat, beantworte sie trotzdem kurz und hilfreich.

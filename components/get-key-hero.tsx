@@ -27,7 +27,7 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
-import { startRotation, type RotationResult } from "@/lib/api"
+import { startRotation, revealKey, type RotationResult } from "@/lib/api"
 import { addToHistory } from "@/lib/key-history"
 import { UsageSnippet } from "@/components/usage-snippet"
 import { useProvider } from "@/components/provider-context"
@@ -96,7 +96,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
   const cancelRef = React.useRef(false)
 
   const [pwOpen, setPwOpen] = React.useState(false)
-  const [pwInput, setPwInput] = React.useState("")
+  const [pwInput, setPwInput] = React.useState("family")
   const [savePw, setSavePw] = React.useState(true)
 
   const [showOnboarding, setShowOnboarding] = React.useState(false)
@@ -158,12 +158,112 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       })
       return
     }
+    if (available > 0) {
+      if (count > 1) {
+        doLeaseMulti(count)
+      } else {
+        doLease()
+      }
+      return
+    }
     const stored = getStoredPassword()
     if (!stored) {
       setPwOpen(true)
       return
     }
     runRotations(stored, count)
+  }
+
+  async function doLease() {
+    setPhase("running")
+    setProgressIdx(0)
+    setResult(null)
+    setErrMsg(null)
+    setCopied(false)
+    setCollectedKeys([])
+    const startedAt = Date.now()
+    setStartedAt(startedAt)
+    setElapsed(0)
+    try {
+      const leaseRes = await fetch(`${provider.apiPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, {
+        cache: "no-store",
+      })
+      if (!leaseRes.ok) throw new Error("Lease fehlgeschlagen")
+      const leaseData = await leaseRes.json() as { api_key: string; alias_email: string; key_name: string; key_id: string }
+      const took = Math.floor((Date.now() - startedAt) / 1000)
+      setElapsed(took)
+      setPhase("done")
+      setResult({
+        status: "success",
+        api_key: leaseData.api_key,
+        gmx_alias: leaseData.alias_email,
+        fireworks_account: leaseData.alias_email,
+        api_key_name: leaseData.key_name,
+        steps_completed: ["key_leased_from_pool"],
+        steps_failed: [],
+        execution_time: `${took}s`,
+      })
+      setProgressIdx(PROGRESS_STEPS.length - 1)
+      addToHistory({
+        id: leaseData.key_id,
+        alias: leaseData.alias_email,
+        keyName: leaseData.key_name,
+        status: "success",
+        apiKey: leaseData.api_key,
+      })
+    } catch (e) {
+      setPhase("error")
+      setErrMsg((e as Error).message || "Leasen fehlgeschlagen")
+    }
+  }
+
+  async function doLeaseMulti(n: number) {
+    setPhase("running")
+    setProgressIdx(0)
+    setResult(null)
+    setErrMsg(null)
+    setCopied(false)
+    setCollectedKeys([])
+    const startedAt = Date.now()
+    setStartedAt(startedAt)
+    setElapsed(0)
+    setCurrentRun(0)
+    cancelRef.current = false
+    const collected: RotationResult[] = []
+    for (let i = 0; i < n; i++) {
+      if (cancelRef.current) break
+      setCurrentRun(i + 1)
+      try {
+        const leaseRes = await fetch(`${provider.apiPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, { cache: "no-store" })
+        if (!leaseRes.ok) throw new Error("Lease fehlgeschlagen")
+        const leaseData = await leaseRes.json() as { api_key: string; alias_email: string; key_name: string; key_id: string }
+        const took = Math.floor((Date.now() - startedAt) / 1000)
+        const res: RotationResult = {
+          status: "success",
+          api_key: leaseData.api_key,
+          gmx_alias: leaseData.alias_email,
+          fireworks_account: leaseData.alias_email,
+          api_key_name: leaseData.key_name,
+          steps_completed: ["key_leased_from_pool"],
+          steps_failed: [],
+          execution_time: `${took}s`,
+        }
+        collected.push(res)
+        setCollectedKeys([...collected])
+        addToHistory({ id: leaseData.key_id, alias: leaseData.alias_email, keyName: leaseData.key_name, status: "success", apiKey: leaseData.api_key })
+      } catch (e) {
+        setErrMsg((e as Error).message)
+        break
+      }
+    }
+    const took = Math.floor((Date.now() - startedAt) / 1000)
+    setElapsed(took)
+    if (collected.length > 0) {
+      setResult(collected[collected.length - 1])
+      setPhase("done")
+    } else {
+      setPhase("error")
+    }
   }
 
   function submitPassword() {
@@ -598,7 +698,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
                 type="password"
                 value={pwInput}
                 onChange={(e) => setPwInput(e.target.value)}
-                placeholder="Dein Passwort"
+                placeholder="family"
                 onKeyDown={(e) => e.key === "Enter" && submitPassword()}
                 autoFocus
               />
