@@ -12,21 +12,23 @@
   "app": {
     "windows": [
       {
-        "title": "SINator — API Key Pool",
-        "width": 500,
-        "height": 700,
-        "resizable": false,
-        "fullscreen": false,
-        "url": "/pool-app.html"
+        "title": "SINator — Dashboard",
+        "width": 1000,
+        "height": 750,
+        "resizable": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "capabilities": ["clipboard"]
     }
   },
   "bundle": {
     "active": true,
     "targets": "all",
+    "macOS": {
+      "entitlements": "SINator.entitlements"
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

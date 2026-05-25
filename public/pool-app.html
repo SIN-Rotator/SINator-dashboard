@@ -84,6 +84,28 @@
   .error-card.show { display: block; }
   .error-card p { font-size: 0.85rem; color: var(--red); }
 
+  .config-card {
+    margin-bottom: 20px; background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; text-align: left;
+  }
+  .config-title {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--orange); font-weight: 600; margin-bottom: 10px;
+  }
+  .config-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .config-row:last-child { margin-bottom: 0; }
+  .config-label {
+    font-size: 0.7rem; color: var(--muted); width: 52px; flex-shrink: 0;
+    font-family: 'SF Mono', 'Menlo', monospace;
+  }
+  .config-value {
+    flex: 1; background: #000; border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; font-family: 'SF Mono', 'Menlo', monospace; font-size: 0.72rem;
+    word-break: break-all; color: var(--fg); margin: 0;
+  }
+
   .loading { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -97,13 +119,27 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg>
   </div>
   <h1>SINator Pool</h1>
-  <p class="sub" id="poolStatus">Lade Pool-Status…</p>
+  <p class="sub" id="poolStatus">Unser gemeinsamer Key-Pool. Bei Rate-Limit wird automatisch gewechselt.</p>
 
   <div class="stats" id="stats">
     <div class="stat"><div class="stat-num total" id="totalKeys">-</div><div class="stat-label">Gesamt</div></div>
     <div class="stat"><div class="stat-num available" id="availKeys">-</div><div class="stat-label">Verfügbar</div></div>
     <div class="stat"><div class="stat-num used" id="usedKeys">-</div><div class="stat-label">Benutzt</div></div>
     <div class="stat"><div class="stat-num leased" id="leasedKeys">-</div><div class="stat-label">Gemietet</div></div>
+  </div>
+
+  <div class="config-card">
+    <div class="config-title">OpenAI-kompatibler Endpunkt</div>
+    <div class="config-row">
+      <span class="config-label">baseURL</span>
+      <code class="config-value" id="configUrl">https://sinator.delqhi.com/inference/v1</code>
+      <button class="copy-btn" onclick="copyText('configUrl')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    </div>
+    <div class="config-row">
+      <span class="config-label">apiKey</span>
+      <code class="config-value" id="configKey">7avN1KkfInNqcOMn2CtwLTvx</code>
+      <button class="copy-btn" onclick="copyText('configKey')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+    </div>
   </div>
 
   <button class="btn" id="getKeyBtn" onclick="getKey()">
@@ -207,6 +243,17 @@ async function copyKey() {
     setTimeout(() => {
       document.querySelector("#copyBtn svg").outerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
     }, 2000)
+  } catch {}
+}
+
+async function copyText(elId) {
+  const text = document.getElementById(elId).textContent
+  try {
+    if (window.__TAURI__ && window.__TAURI__.writeText) {
+      await window.__TAURI__.writeText(text)
+    } else {
+      await navigator.clipboard.writeText(text)
+    }
   } catch {}
 }
 

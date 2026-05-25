@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select"
 import { ArrowUpDown, Copy, CheckCheck, Trash2, Search } from "lucide-react"
 import { toast } from "sonner"
-import { deleteKey, markKeyUsed, type PoolKey } from "@/lib/api"
+import { deleteKey, markKeyUsed, revealKey, type PoolKey } from "@/lib/api"
 import { useProvider } from "@/components/provider-context"
 import {
   AlertDialog,
@@ -35,30 +35,31 @@ interface Props {
   onMutate: () => void
 }
 
-function getStatus(k: PoolKey): "active" | "unused" | "suspended" {
-  if (k.status) return k.status
-  return k.used ? "active" : "unused"
+function getStatus(k: PoolKey): "available" | "used" | "suspended" {
+  if (k.used) return "used"
+  if (k.suspended) return "suspended"
+  return "available"
 }
 
-function StatusBadge({ status }: { status: "active" | "unused" | "suspended" }) {
-  if (status === "active")
+function StatusBadge({ status }: { status: "available" | "used" | "suspended" }) {
+  if (status === "available")
     return (
       <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/15 border-emerald-500/30">
         <span className="size-1.5 rounded-full bg-emerald-500 mr-1.5" />
-        active
+        verfügbar
       </Badge>
     )
   if (status === "suspended")
     return (
       <Badge variant="destructive">
         <span className="size-1.5 rounded-full bg-current mr-1.5 opacity-80" />
-        suspended
+        gesperrt
       </Badge>
     )
   return (
     <Badge variant="secondary">
       <span className="size-1.5 rounded-full bg-muted-foreground mr-1.5" />
-      unused
+      verbraucht
     </Badge>
   )
 }
@@ -83,7 +84,7 @@ export function KeyTable({ keys, onMutate }: Props) {
   const filtered = React.useMemo(() => {
     let out = [...keys]
     if (filter !== "all") {
-      out = out.filter((k) => getStatus(k) === (filter === "available" ? "unused" : filter))
+      out = out.filter((k) => getStatus(k) === filter)
     }
     if (search.trim()) {
       const s = search.toLowerCase()
@@ -112,22 +113,25 @@ export function KeyTable({ keys, onMutate }: Props) {
   }, [keys, filter, search, sortKey, sortDir])
 
   async function copyKey(k: PoolKey) {
+    setBusy(k.id)
     try {
-      // Per spec, real key value is never rendered in DOM. The list endpoint
-      // doesn't return the secret, so we copy a marker plus identifier.
-      // Backend would need a dedicated reveal endpoint to copy the actual key.
-      const value = (k as unknown as { api_key?: string }).api_key
+      const result = await revealKey(provider.apiPrefix, k.id)
+      const value = result.api_key
       if (value) {
-        await navigator.clipboard.writeText(value)
-        toast.success(`Copied key ${k.key_name}`)
+        if ("__TAURI_INTERNALS__" in window) {
+          const { writeText } = await import("@tauri-apps/plugin-clipboard-manager")
+          await writeText(value)
+        } else {
+          await navigator.clipboard.writeText(value)
+        }
+        toast.success(`API Key kopiert`, { description: k.key_name })
       } else {
-        await navigator.clipboard.writeText(k.id)
-        toast.success("Copied key ID", {
-          description: "Backend did not return the secret in /pool/stats — ID copied instead.",
-        })
+        toast.error("Key nicht verfügbar")
       }
-    } catch {
-      toast.error("Failed to copy")
+    } catch (e) {
+      toast.error("Kopieren fehlgeschlagen", { description: (e as Error).message })
+    } finally {
+      setBusy(null)
     }
   }
 

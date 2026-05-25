@@ -1,0 +1,9 @@
+{
+  "identifier": "clipboard",
+  "description": "Clipboard access for copying API keys",
+  "windows": ["main"],
+  "permissions": [
+    "clipboard-manager:allow-write-text",
+    "clipboard-manager:allow-read-text"
+  ]
+}

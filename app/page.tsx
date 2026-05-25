@@ -34,7 +34,7 @@ export default function DashboardPage() {
 
   const total = stats?.total ?? 0
   const available = stats?.available ?? 0
-  const used = stats?.used ?? 0
+  const dead = (stats?.used ?? 0) + (stats?.suspended ?? 0)
 
   return (
     <div className="min-h-screen pb-24">
@@ -63,8 +63,8 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground mt-1">Verfügbar</p>
             </Card>
             <Card className="p-4 text-center">
-              <p className="text-2xl font-bold text-muted-foreground">{used}</p>
-              <p className="text-xs text-muted-foreground mt-1">Benutzt</p>
+              <p className="text-2xl font-bold text-muted-foreground">{dead}</p>
+              <p className="text-xs text-muted-foreground mt-1">Verbraucht</p>
             </Card>
           </div>
         )}

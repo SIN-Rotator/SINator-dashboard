@@ -16,13 +16,18 @@ export interface PoolKey {
   key_name: string
   created_at: string
   used: boolean
-  status?: "active" | "unused" | "suspended"
+  suspended?: boolean
+  suspended_reason?: string
+  leased?: boolean
+  leased_to?: string
 }
 
 export interface PoolStats {
   status: string
   total: number
   used: number
+  suspended: number
+  leased: number
   available: number
   keys: PoolKey[]
   execution_time?: string
@@ -96,6 +101,13 @@ export async function markKeyUsed(apiPrefix: string, keyId: string): Promise<{ s
 export async function deleteKey(apiPrefix: string, keyId: string): Promise<{ status: string }> {
   const r = await fetch(api(`${apiPrefix}/pool/${encodeURIComponent(keyId)}`), {
     method: "DELETE",
+  })
+  return handleJson(r)
+}
+
+export async function revealKey(apiPrefix: string, keyId: string): Promise<{ status: string; api_key: string }> {
+  const r = await fetch(api(`${apiPrefix}/pool/reveal/${encodeURIComponent(keyId)}`), {
+    cache: "no-store",
   })
   return handleJson(r)
 }
