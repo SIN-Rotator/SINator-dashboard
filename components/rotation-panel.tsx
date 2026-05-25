@@ -80,7 +80,7 @@ export function RotationPanel({ onLog, onRotationDone }: Props) {
     const startTs = new Date().toLocaleTimeString()
     onLog({ ts: startTs, message: "Starting rotation pipeline…", status: "info" })
     try {
-      const res = await startRotation(provider.apiPrefix, password)
+      const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
       const endTs = new Date().toLocaleTimeString()
       const completed = res.steps_completed ?? []
       const failed = res.steps_failed ?? []

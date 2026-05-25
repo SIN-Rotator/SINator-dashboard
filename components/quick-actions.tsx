@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { startRotation } from "@/lib/api"
+import { useProvider } from "@/components/provider-context"
 
 interface Props {
   onRefresh: () => void
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function QuickActions({ onRefresh, onRotationDone, refreshing }: Props) {
+  const { provider } = useProvider()
   const [open, setOpen] = React.useState(false)
   const [password, setPassword] = React.useState("")
   const [running, setRunning] = React.useState(false)
@@ -38,7 +40,7 @@ export function QuickActions({ onRefresh, onRotationDone, refreshing }: Props) {
       description: "GMX → Fireworks → Key (~200s)",
     })
     try {
-      const res = await startRotation(password)
+      const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
       if (res.status === "success") {
         toast.success("Rotation complete", {
           id,

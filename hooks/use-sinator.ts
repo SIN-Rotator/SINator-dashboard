@@ -29,13 +29,14 @@ export function useSinator(pollMs = 10000): SinatorState {
   const [loading, setLoading] = React.useState(true)
 
   const apiPrefix = provider.apiPrefix
+  const backendUrl = provider.backendUrl
 
   const refresh = React.useCallback(async () => {
     try {
       const [h, b, s] = await Promise.allSettled([
-        getHealth(),
+        getHealth(backendUrl),
         getBrowserStatus(),
-        getPoolStats(apiPrefix),
+        getPoolStats(backendUrl, apiPrefix),
       ])
       if (h.status === "fulfilled") setHealth(h.value)
       if (b.status === "fulfilled") setBrowser(b.value)
@@ -47,7 +48,7 @@ export function useSinator(pollMs = 10000): SinatorState {
     } finally {
       setLoading(false)
     }
-  }, [apiPrefix])
+  }, [apiPrefix, backendUrl])
 
   // Reset auf Provider-Wechsel und neu laden
   React.useEffect(() => {

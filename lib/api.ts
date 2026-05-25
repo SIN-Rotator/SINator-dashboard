@@ -1,11 +1,8 @@
-// API client for SINator FastAPI backend
-// In dev mode (Next.js): proxied via rewrites → relative paths
-// In Tauri mode: direct call to localhost:8000
+// API client for SINator FastAPI backends
+// Each provider can have its own backendUrl (e.g. HeyPiggy on :8001)
 
-const BACKEND_URL = "http://localhost:8000"
-
-function api(path: string): string {
-  return `${BACKEND_URL}${path}`
+export function apiUrl(backendUrl: string, path: string): string {
+  return `${backendUrl}${path}`
 }
 
 export interface PoolKey {
@@ -20,6 +17,16 @@ export interface PoolKey {
   leased_to?: string
 }
 
+export interface PoolCredential {
+  id: string
+  email: string
+  password: string
+  alias_email: string
+  created_at: string
+  used: boolean
+  used_at: string | null
+}
+
 export interface PoolStats {
   status: string
   total: number
@@ -28,6 +35,7 @@ export interface PoolStats {
   leased: number
   available: number
   keys: PoolKey[]
+  credentials?: PoolCredential[]
   execution_time?: string
 }
 
@@ -48,8 +56,10 @@ export interface RotationResult {
   status: string
   gmx_alias?: string
   fireworks_account?: string
+  heypiggy_account?: string
   api_key?: string
   api_key_name?: string
+  credential_id?: string
   steps_completed: string[]
   steps_failed: string[]
   execution_time?: string
@@ -64,57 +74,66 @@ async function handleJson<T>(r: Response): Promise<T> {
   return r.json() as Promise<T>
 }
 
-// Globale Endpoints (nicht provider-spezifisch)
-export async function getHealth(): Promise<Health> {
-  const r = await fetch(api("/health"), { cache: "no-store" })
+// Globale Endpoints (immer über Fireworks-Backend :8000)
+const DEFAULT_BACKEND = "http://localhost:8000"
+
+export async function getHealth(backendUrl?: string): Promise<Health> {
+  const r = await fetch(apiUrl(backendUrl || DEFAULT_BACKEND, "/health"), { cache: "no-store" })
   return handleJson<Health>(r)
 }
 
 export async function getBrowserStatus(): Promise<BrowserStatus> {
-  const r = await fetch(api("/api/v1/browser/status"), { cache: "no-store" })
+  const r = await fetch(apiUrl(DEFAULT_BACKEND, "/api/v1/browser/status"), { cache: "no-store" })
   return handleJson<BrowserStatus>(r)
 }
 
-export async function getPoolStats(apiPrefix: string): Promise<PoolStats> {
-  const r = await fetch(api(`${apiPrefix}/pool/stats`), { cache: "no-store" })
+export async function getPoolStats(backendUrl: string, apiPrefix: string): Promise<PoolStats> {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/stats`), { cache: "no-store" })
   return handleJson<PoolStats>(r)
 }
 
-export async function startRotation(apiPrefix: string, password: string): Promise<RotationResult> {
-  const r = await fetch(api(`${apiPrefix}/rotation/full`), {
+export async function startRotation(
+  backendUrl: string,
+  apiPrefix: string,
+  password: string,
+): Promise<RotationResult> {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/rotation/full`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ fireworks_password: password, save_to_pool: true }),
+    body: JSON.stringify({ fireworks_password: password, heypiggy_password: password, save_to_pool: true }),
   })
   return handleJson<RotationResult>(r)
 }
 
-export async function markKeyUsed(apiPrefix: string, keyId: string): Promise<{ status: string }> {
-  const r = await fetch(api(`${apiPrefix}/pool/use?key_id=${encodeURIComponent(keyId)}`), {
+export async function markKeyUsed(backendUrl: string, apiPrefix: string, keyId: string): Promise<{ status: string }> {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/use`), {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key_id: keyId }),
   })
   return handleJson(r)
 }
 
-export async function deleteKey(apiPrefix: string, keyId: string): Promise<{ status: string }> {
-  const r = await fetch(api(`${apiPrefix}/pool/${encodeURIComponent(keyId)}`), {
+export async function deleteKey(backendUrl: string, apiPrefix: string, keyId: string): Promise<{ status: string }> {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/credential/${encodeURIComponent(keyId)}`), {
     method: "DELETE",
   })
   return handleJson(r)
 }
 
-export async function revealKey(apiPrefix: string, keyId: string): Promise<{ status: string; api_key: string }> {
-  const r = await fetch(api(`${apiPrefix}/pool/reveal/${encodeURIComponent(keyId)}`), {
+export async function revealKey(backendUrl: string, apiPrefix: string, keyId: string): Promise<{ status: string; api_key: string }> {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/reveal/${encodeURIComponent(keyId)}`), {
     cache: "no-store",
   })
   return handleJson(r)
 }
 
 export async function addKey(
+  backendUrl: string,
   apiPrefix: string,
   payload: Record<string, unknown>,
 ): Promise<{ status: string }> {
-  const r = await fetch(api(`${apiPrefix}/pool/add`), {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/add`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -128,16 +147,17 @@ export interface ConfigData {
   fireworks_password: string
 }
 
-export async function getConfig(apiPrefix: string): Promise<ConfigData> {
-  const r = await fetch(api(`${apiPrefix}/config`), { cache: "no-store" })
+export async function getConfig(apiPrefix: string, backendUrl?: string): Promise<ConfigData> {
+  const r = await fetch(apiUrl(backendUrl || DEFAULT_BACKEND, `${apiPrefix}/config`), { cache: "no-store" })
   return handleJson(r) as Promise<ConfigData>
 }
 
 export async function saveConfig(
   apiPrefix: string,
   data: { gmx_email: string; gmx_password: string; fireworks_password: string },
+  backendUrl?: string,
 ): Promise<ConfigData> {
-  const r = await fetch(api(`${apiPrefix}/config`), {
+  const r = await fetch(apiUrl(backendUrl || DEFAULT_BACKEND, `${apiPrefix}/config`), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

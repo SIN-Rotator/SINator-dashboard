@@ -304,7 +304,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       }, 50_000)
 
       try {
-        const res = await startRotation(provider.apiPrefix, password)
+        const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
         clearInterval(stepInterval)
         setProgressIdx(PROGRESS_STEPS.length - 1)
 

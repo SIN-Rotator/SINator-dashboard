@@ -1,8 +1,8 @@
 // Provider-Registry: zentrale Konfiguration für alle Rotator-Typen
 import type { ComponentType } from "react"
-import { Flame, Github, Triangle, Mail } from "lucide-react"
+import { Flame, Github, Triangle, Mail, PiggyBank } from "lucide-react"
 
-export type ProviderId = "fireworks" | "github" | "vercel" | "gmx"
+export type ProviderId = "fireworks" | "github" | "vercel" | "gmx" | "heypiggy"
 
 export interface UsageSnippets {
   curl?: string
@@ -24,12 +24,13 @@ export interface ProviderConfig {
   // Theming hint (Tailwind class snippet)
   accent: string
   // Backend
-  apiPrefix: string // z.B. "/api/v1" oder "/api/v1/github"
-  available: boolean // false = "Coming soon"
+  backendUrl: string  // z.B. "http://localhost:8000"
+  apiPrefix: string   // z.B. "/api/v1"
+  available: boolean  // false = "Coming soon"
   // Begriffe pro Provider
-  itemNoun: string // "API Key", "Account", "Alias"
+  itemNoun: string       // "API Key", "Account", "Alias"
   itemNounPlural: string // "API Keys", "Accounts", "Aliase"
-  passwordLabel: string // z.B. "Fireworks Passwort", "GitHub Passwort"
+  passwordLabel: string  // z.B. "Fireworks Passwort", "Master-Passwort"
   // Texte
   heroTitle: string
   heroSubtitle: string
@@ -51,6 +52,7 @@ const FIREWORKS: ProviderConfig = {
   description: "API Keys für Fireworks AI Inference",
   icon: Flame,
   accent: "text-orange-500",
+  backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1",
   available: true,
   itemNoun: "API Key",
@@ -133,6 +135,7 @@ const GITHUB: ProviderConfig = {
   description: "Automatisierte GitHub Account-Erstellung",
   icon: Github,
   accent: "text-foreground",
+  backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/github",
   available: true,
   itemNoun: "Account",
@@ -178,6 +181,7 @@ const VERCEL: ProviderConfig = {
   description: "Vercel & v0.app API Tokens",
   icon: Triangle,
   accent: "text-foreground",
+  backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/vercel",
   available: true,
   itemNoun: "API Token",
@@ -227,6 +231,7 @@ const GMX: ProviderConfig = {
   description: "GMX Email-Alias-Verwaltung",
   icon: Mail,
   accent: "text-blue-500",
+  backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/gmx",
   available: true,
   itemNoun: "Alias",
@@ -265,14 +270,61 @@ const GMX: ProviderConfig = {
   ],
 }
 
+const HEYPIGGY: ProviderConfig = {
+  id: "heypiggy",
+  label: "HeyPiggy",
+  shortLabel: "HeyPiggy",
+  description: "HeyPiggy Accounts mit GMX-Alias registrieren",
+  icon: PiggyBank,
+  accent: "text-pink-500",
+  backendUrl: "http://localhost:8001",
+  apiPrefix: "/api/v1",
+  available: true,
+  itemNoun: "Account",
+  itemNounPlural: "HeyPiggy Accounts",
+  passwordLabel: "Master-Passwort",
+  heroTitle: "HeyPiggy Account holen",
+  heroSubtitle: "Neuer GMX-Alias + HeyPiggy Registrierung in ~3 Min",
+  successTitle: "Neuer HeyPiggy Account",
+  faq: [
+    {
+      q: "Was macht der HeyPiggy-Rotator?",
+      a: "Er erstellt neue GMX-Aliase, registriert damit HeyPiggy-Accounts über den Invite-Link und speichert Email + Passwort im Pool.",
+    },
+    {
+      q: "Wie nutze ich den Account?",
+      a: "Die Zugangsdaten (Email + Passwort) werden im Pool gespeichert. Einfach auf heypiggy.com mit den Daten einloggen.",
+    },
+    {
+      q: "Kann ich mehrere Accounts gleichzeitig nutzen?",
+      a: "Ja, jeder Account läuft unabhängig. Du kannst bis zu 10 parallel erstellen.",
+    },
+    {
+      q: "Was passiert mit den Accounts?",
+      a: "Sie werden mit deinem GMX-Alias verknüpft — alle Mails landen in deinem Hauptpostfach. Passwort kannst du später ändern.",
+    },
+    {
+      q: "Was bei Fehlern?",
+      a: "GMX zeigt manchmal Captchas — einfach 5-10 Minuten warten. HeyPiggy Registrierung kann bei bereits belegtem Alias fehlschlagen.",
+    },
+  ],
+  chatSystemPrompt: `Du bist der Hilfe-Assistent für den SINator HeyPiggy-Rotator. Antworte freundlich und kurz auf Deutsch, einfach genug für 12-Jährige. Der Rotator erstellt automatisch GMX-Email-Aliase und registriert damit HeyPiggy-Accounts über den Invite-Link https://www.heypiggy.com?invite=UD62VKW. Die Zugangsdaten (Email + Passwort) werden im Pool gespeichert. Einfach auf heypiggy.com mit den Daten einloggen.`,
+  quickFacts: [
+    { label: "~3 Min", desc: "pro Account" },
+    { label: "GMX-Alias", desc: "als Email" },
+    { label: "Email+Passwort", desc: "im Pool gespeichert" },
+  ],
+}
+
 export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
   fireworks: FIREWORKS,
   github: GITHUB,
   vercel: VERCEL,
   gmx: GMX,
+  heypiggy: HEYPIGGY,
 }
 
-export const PROVIDER_LIST: ProviderConfig[] = [FIREWORKS, GITHUB, VERCEL, GMX]
+export const PROVIDER_LIST: ProviderConfig[] = [FIREWORKS, HEYPIGGY, GITHUB, VERCEL, GMX]
 
 export const DEFAULT_PROVIDER: ProviderId = "fireworks"
 

@@ -115,7 +115,7 @@ export function KeyTable({ keys, onMutate }: Props) {
   async function copyKey(k: PoolKey) {
     setBusy(k.id)
     try {
-      const result = await revealKey(provider.apiPrefix, k.id)
+      const result = await revealKey(provider.backendUrl, provider.apiPrefix, k.id)
       const value = result.api_key
       if (value) {
         if ("__TAURI_INTERNALS__" in window) {
@@ -138,7 +138,7 @@ export function KeyTable({ keys, onMutate }: Props) {
   async function onMarkUsed(k: PoolKey) {
     setBusy(k.id)
     try {
-      await markKeyUsed(provider.apiPrefix, k.id)
+      await markKeyUsed(provider.backendUrl, provider.apiPrefix, k.id)
       toast.success("Marked as used", { description: k.key_name })
       onMutate()
     } catch (e) {
@@ -154,7 +154,7 @@ export function KeyTable({ keys, onMutate }: Props) {
     setPendingDelete(null)
     setBusy(k.id)
     try {
-      await deleteKey(provider.apiPrefix, k.id)
+      await deleteKey(provider.backendUrl, provider.apiPrefix, k.id)
       toast.success("Key deleted", { description: k.key_name })
       onMutate()
     } catch (e) {
