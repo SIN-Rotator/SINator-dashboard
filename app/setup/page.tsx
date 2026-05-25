@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { getConfig, saveConfig, ConfigData } from "@/lib/api"
-import { Shield, Mail, Key, CheckCircle2, Loader2, Eye, EyeOff } from "lucide-react"
+import { Shield, Mail, Key, CheckCircle2, Loader2, Eye, EyeOff, Link, Terminal, Code, Globe, Monitor } from "lucide-react"
 
 const API_PREFIX = "/api/v1"
 
@@ -174,23 +174,126 @@ export default function SetupPage() {
           </form>
         )}
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Rotation</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>
-              Die Rotation erstellt einen neuen GMX Alias, registriert einen neuen
-              Fireworks Account damit, und speichert den API Key im Pool.
-            </p>
-            <p>
-              <strong>GMX:</strong> Login → Alias löschen → Alias erstellen → Logout
-            </p>
-            <p>
-              <strong>Fireworks:</strong> Signup → OTP Bestätigung → Onboarding → API Key erstellen
-            </p>
-          </CardContent>
-        </Card>
+        <div className="pt-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Link className="size-5 text-primary" />
+            <h2 className="font-semibold text-lg">Pool-API verbinden</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-6">
+            Verbinde opencode, Cursor, Continue oder jeden OpenAI-kompatiblen Client mit dem SINator Key-Pool.
+            Rate-Limits und tote Keys werden automatisch erkannt und getauscht.
+          </p>
+
+          <Card className="mb-4">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Globe className="size-4 text-emerald-500" />
+                Endpunkt (für alle Clients gleich)
+              </div>
+            </CardHeader>
+            <CardContent>
+              <pre className="bg-muted p-4 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
+                <span className="text-muted-foreground">baseURL: </span>
+                <span className="text-emerald-500 font-medium">https://sinator.delqhi.com/inference/v1</span>
+                {"\n"}
+                <span className="text-muted-foreground">apiKey:  </span>
+                <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>
+              </pre>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-4">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Terminal className="size-4" />
+                opencode
+              </div>
+              <CardDescription>Zwei Schritte — Config anlegen + env setzen</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">
+                  1. In <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> unter <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">provider.fireworks-ai.options</code>:
+                </p>
+                <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto">
+                  <span className="text-muted-foreground">{`"options": { "baseURL": `}</span>
+                  <span className="text-emerald-500">{`"https://sinator.delqhi.com/inference/v1"`}</span>
+                  <span className="text-muted-foreground">{` }`}</span>
+                </pre>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5">
+                  2. In <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.zshrc</code>:
+                </p>
+                <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto">
+                  <span className="text-blue-400">export </span>
+                  <span className="text-foreground">FIREWORKS_API_KEY</span>
+                  <span className="text-muted-foreground">=</span>
+                  <span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>
+                </pre>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Das SDK <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">@ai-sdk/fireworks</code> liest <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">FIREWORKS_API_KEY</code> automatisch.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="mb-4">
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Code className="size-4" />
+                Cursor / Continue / Python SDK
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5"><strong>Cursor:</strong> Settings → Models → Neuen Provider</p>
+                <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
+                  <span className="text-muted-foreground">Base URL: </span>
+                  <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                  {"\n"}
+                  <span className="text-muted-foreground">API Key:  </span>
+                  <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
+                </pre>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5"><strong>Continue (VS Code):</strong> In <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.continue/config.json</code></p>
+                <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
+                  <span className="text-muted-foreground">{`{ "models": [{`}</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "provider": `}</span><span className="text-emerald-500">{`"openai"`}</span><span className="text-muted-foreground">,</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"https://sinator.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"7avN1KkfInNqcOMn2CtwLTvx"`}</span>{"\n"}
+                  <span className="text-muted-foreground">{`}] }`}</span>
+                </pre>
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5"><strong>Python:</strong></p>
+                <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
+                  <span className="text-blue-400">from</span> openai <span className="text-blue-400">import</span> OpenAI{"\n"}
+                  client = OpenAI({"\n"}
+                  {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinator.delqhi.com/inference/v1&quot;</span>,{"\n"}
+                  {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>,{"\n"}
+                  )
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-blue-500/30 bg-blue-500/5">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Monitor className="size-4 text-blue-400 mt-0.5 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium mb-1">Lokal am Mac?</p>
+                  <p className="text-xs text-muted-foreground">
+                    Kein API Key nötig — der Proxy erlaubt <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost</code> automatisch.
+                    Base URL dann: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:8888/inference/v1</code>
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   )
