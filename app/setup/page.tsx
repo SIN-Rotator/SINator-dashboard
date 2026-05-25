@@ -206,24 +206,57 @@ export default function SetupPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Terminal className="size-4" />
-                opencode
+                opencode — komplett einrichten
               </div>
-              <CardDescription>Zwei Schritte — Config anlegen + env setzen</CardDescription>
+              <CardDescription>Zwei Schritte — fertige Datei kopieren + env setzen</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">
-                  1. In <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> unter <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">provider.fireworks-ai.options</code>:
+                  1. Erstelle (oder ergänze) <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> — hier die komplette Datei:
                 </p>
-                <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto">
-                  <span className="text-muted-foreground">{`"options": { "baseURL": `}</span>
-                  <span className="text-emerald-500">{`"https://sinator.delqhi.com/inference/v1"`}</span>
-                  <span className="text-muted-foreground">{` }`}</span>
+                <pre className="bg-muted p-4 rounded-lg text-[10px] font-mono overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto">
+{`{
+  "provider": {
+    "fireworks-ai": {
+      "npm": "@ai-sdk/fireworks",
+      "name": "Fireworks AI (SINator)",
+      "options": {
+        "baseURL": "https://sinator.delqhi.com/inference/v1"
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "id": "fireworks/deepseek-v4-pro",
+          "name": "DeepSeek V4 Pro",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 64000 } },
+          "limit": { "context": 1048576, "output": 65536 }
+        },
+        "glm-5p1": {
+          "id": "fireworks/glm-5p1",
+          "name": "GLM 5.1",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 } },
+          "limit": { "context": 202752, "output": 32768 }
+        },
+        "kimi-k2p6": {
+          "id": "fireworks/kimi-k2p6",
+          "name": "Kimi K2.6",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 } },
+          "limit": { "context": 262144, "output": 32768 },
+          "modalities": { "input": ["text","image"], "output": ["text"] }
+        }
+      }
+    }
+  },
+  "default_agent": "SIN-Zeus",
+  "agent": {
+    "SIN-Zeus": { "model": "fireworks-ai/deepseek-v4-pro" }
+  }
+}`}
                 </pre>
               </div>
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">
-                  2. In <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.zshrc</code>:
+                  2. API-Key in <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.zshrc</code> (dann <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">source ~/.zshrc</code>):
                 </p>
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto">
                   <span className="text-blue-400">export </span>
@@ -233,7 +266,7 @@ export default function SetupPage() {
                 </pre>
               </div>
               <p className="text-xs text-muted-foreground">
-                Das SDK <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">@ai-sdk/fireworks</code> liest <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">FIREWORKS_API_KEY</code> automatisch.
+                Bestehende opencode.json? Nur den <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">provider.fireworks-ai</code> Block in dein existierendes <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">"provider"</code> Objekt einfügen.
               </p>
             </CardContent>
           </Card>
