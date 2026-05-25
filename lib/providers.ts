@@ -277,7 +277,7 @@ const HEYPIGGY: ProviderConfig = {
   description: "HeyPiggy Accounts mit GMX-Alias registrieren",
   icon: PiggyBank,
   accent: "text-pink-500",
-  backendUrl: "http://localhost:8001",
+  backendUrl: "http://localhost:8002",
   apiPrefix: "/api/v1",
   available: true,
   itemNoun: "Account",
