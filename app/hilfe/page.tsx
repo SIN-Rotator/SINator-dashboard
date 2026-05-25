@@ -114,6 +114,76 @@ export default function HilfePage() {
           </Accordion>
         </Card>
 
+        <Card className="p-4 sm:p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <KeyRound className="size-5 text-primary" />
+            <h2 className="font-semibold text-lg">Pool-API einrichten</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-6">
+            Verbinde opencode, Cursor oder jeden OpenAI-kompatiblen Client mit dem gemeinsamen Key-Pool.
+            Rate-Limits werden automatisch erkannt und Keys getauscht — du merkst nichts davon.
+          </p>
+
+          <div className="space-y-5">
+            <div>
+              <h3 className="text-sm font-medium mb-2">Endpunkt (für alle Clients gleich)</h3>
+              <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
+                <span className="text-muted-foreground">baseURL: </span>
+                <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                {"\n"}
+                <span className="text-muted-foreground">apiKey:  </span>
+                <span className="text-amber-500">7avN</span>
+                <span className="text-muted-foreground">... (im Header)</span>
+              </pre>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-2">opencode</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                Zwei Schritte — Config anlegen + Umgebungsvariable setzen:
+              </p>
+              <p className="text-xs text-muted-foreground mb-1">
+                1. In <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">~/.config/opencode/opencode.json</code> den Provider <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">fireworks-ai</code> mit dieser Option:
+              </p>
+              <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto my-2">
+                <span className="text-muted-foreground">{`"options": { "baseURL": "`}</span>
+                <span className="text-emerald-500">{`https://sinator.delqhi.com/inference/v1`}</span>
+                <span className="text-muted-foreground">{`" }`}</span>
+              </pre>
+              <p className="text-xs text-muted-foreground mb-1">
+                2. In <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">~/.zshrc</code> (oder <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">~/.bashrc</code>):
+              </p>
+              <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto my-2">
+                <span className="text-blue-400">export </span>
+                <span className="text-foreground">FIREWORKS_API_KEY</span>
+                <span className="text-muted-foreground">=</span>
+                <span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>
+              </pre>
+              <p className="text-xs text-muted-foreground">
+                Das SDK <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">@ai-sdk/fireworks</code> liest <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">FIREWORKS_API_KEY</code> automatisch als <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">Authorization: Bearer</code> Header.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium mb-2">Cursor / Continue / Andere</h3>
+              <p className="text-xs text-muted-foreground mb-2">
+                In den API-Einstellungen Base URL und API Key eintragen:
+              </p>
+              <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
+                <span className="text-muted-foreground">Base URL = </span>
+                <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                {"\n"}
+                <span className="text-muted-foreground">API Key  = </span>
+                <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
+              </pre>
+            </div>
+
+            <div className="text-xs text-muted-foreground border-t pt-4">
+              <strong className="text-foreground">Lokal am Mac?</strong> Kein API Key nötig — der Proxy erlaubt <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">localhost</code> automatisch.
+            </div>
+          </div>
+        </Card>
+
         <div>
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle className="size-4 text-muted-foreground" />
