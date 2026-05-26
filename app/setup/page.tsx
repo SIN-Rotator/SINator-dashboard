@@ -189,16 +189,23 @@ export default function SetupPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Globe className="size-4 text-emerald-500" />
-                Endpunkt (für alle Clients gleich)
+                Lokale Endpunkte (3 Macs — je 1 Proxy)
               </div>
             </CardHeader>
             <CardContent>
+              <p className="text-xs text-muted-foreground mb-3">
+                Drei dedizierte Pool-Proxies. Jeder Mac bekommt seinen eigenen Port — keine Überlastung, keine geteilten Keys.
+              </p>
               <pre className="bg-muted p-4 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
-                <span className="text-muted-foreground">baseURL: </span>
-                <span className="text-emerald-500 font-medium">https://sinator.delqhi.com/inference/v1</span>
-                {"\n"}
+                <span className="text-muted-foreground">Mac 1 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">http://localhost:8888/inference/v1</span>{"\n"}
+                <span className="text-muted-foreground">Mac 2 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">http://localhost:8889/inference/v1</span>{"\n"}
+                <span className="text-muted-foreground">Mac 3 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">http://localhost:8890/inference/v1</span>{"\n\n"}
                 <span className="text-muted-foreground">apiKey:  </span>
-                <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>
+                <span className="text-amber-500 font-medium">pool</span>
+                <span className="text-muted-foreground text-[9px]">  (kein Auth für localhost)</span>
               </pre>
             </CardContent>
           </Card>
@@ -222,9 +229,9 @@ export default function SetupPage() {
     "fireworks-ai": {
       "npm": "@ai-sdk/fireworks",
       "name": "Fireworks AI (SINator)",
-      "options": {
-        "baseURL": "https://sinator.delqhi.com/inference/v1"
-      },
+          "options": {
+            "baseURL": "http://localhost:8888/inference/v1"
+          },
       "models": {
         "deepseek-v4-pro": {
           "id": "fireworks/deepseek-v4-pro",
@@ -263,7 +270,8 @@ export default function SetupPage() {
                   <span className="text-blue-400">export </span>
                   <span className="text-foreground">FIREWORKS_API_KEY</span>
                   <span className="text-muted-foreground">=</span>
-                  <span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>
+                  <span className="text-amber-500">&quot;pool&quot;</span>
+                  <span className="text-muted-foreground text-[9px]">  (localhost, kein Auth nötig)</span>
                 </pre>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -284,10 +292,11 @@ export default function SetupPage() {
                 <p className="text-xs text-muted-foreground mb-1.5"><strong>Cursor:</strong> Settings → Models → Neuen Provider</p>
                 <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                   <span className="text-muted-foreground">Base URL: </span>
-                  <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                  <span className="text-emerald-500">http://localhost:{'\u003cPORT\u003e'}/inference/v1</span>
                   {"\n"}
+                  <span className="text-muted-foreground text-[10px]">PORT = 8888/8889/8890 (je nach Mac)</span>{"\n"}
                   <span className="text-muted-foreground">API Key:  </span>
-                  <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
+                  <span className="text-amber-500">pool</span>
                 </pre>
               </div>
               <div>
@@ -295,8 +304,8 @@ export default function SetupPage() {
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
                   <span className="text-muted-foreground">{`{ "models": [{`}</span>{"\n"}
                   <span className="text-muted-foreground">{`  "provider": `}</span><span className="text-emerald-500">{`"openai"`}</span><span className="text-muted-foreground">,</span>{"\n"}
-                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"https://sinator.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
-                  <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"7avN1KkfInNqcOMn2CtwLTvx"`}</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"http://localhost:8888/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"pool"`}</span>{"\n"}
                   <span className="text-muted-foreground">{`}] }`}</span>
                 </pre>
               </div>
