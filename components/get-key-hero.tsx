@@ -192,7 +192,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       const leaseData = await leaseRes.json() as { api_key: string; alias_email: string; key_name: string; key_id: string }
       const took = Math.floor((Date.now() - startedAt) / 1000)
       setElapsed(took)
-      setPhase("done")
+      setPhase("success")
       setResult({
         status: "success",
         api_key: leaseData.api_key,
@@ -260,7 +260,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
     setElapsed(took)
     if (collected.length > 0) {
       setResult(collected[collected.length - 1])
-      setPhase("done")
+      setPhase("success")
     } else {
       setPhase("error")
     }
