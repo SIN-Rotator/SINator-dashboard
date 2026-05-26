@@ -35,7 +35,8 @@ export function clearHistory() {
   window.localStorage.removeItem(HISTORY_KEY)
 }
 
-export function maskKey(key: string): string {
+export function maskKey(key: string | undefined | null): string {
+  if (!key) return ""
   if (key.length <= 12) return key
   return `${key.slice(0, 6)}…${key.slice(-4)}`
 }
