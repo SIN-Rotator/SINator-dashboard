@@ -106,10 +106,8 @@ export async function startRotation(
 }
 
 export async function markKeyUsed(backendUrl: string, apiPrefix: string, keyId: string): Promise<{ status: string }> {
-  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/use`), {
+  const r = await fetch(apiUrl(backendUrl, `${apiPrefix}/pool/use?key_id=${encodeURIComponent(keyId)}`), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ key_id: keyId }),
   })
   return handleJson(r)
 }
