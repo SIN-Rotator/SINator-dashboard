@@ -189,18 +189,21 @@ export default function SetupPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Globe className="size-4 text-emerald-500" />
-                Öffentlicher Endpunkt (für ALLE Macs gleich)
+                3 dedizierte Pool-URLs — je Mac eine
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground mb-3">
-                Cloudflare Tunnel — funktioniert auf jedem Rechner. Der Pool-Proxy verteilt automatisch Keys auf 3 Instanzen.
+                Jeder Mac bekommt seinen eigenen Proxy mit eigenem API-Key aus dem Pool. Kein Teilen, keine Contention.
               </p>
               <pre className="bg-muted p-4 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
-                <span className="text-muted-foreground">baseURL: </span>
-                <span className="text-emerald-500 font-medium">https://sinator.delqhi.com/inference/v1</span>
-                {"\n"}
-                <span className="text-muted-foreground">apiKey:  </span>
+                <span className="text-muted-foreground">Mac 1 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">https://sinatorpool1.delqhi.com/inference/v1</span>{"\n"}
+                <span className="text-muted-foreground">Mac 2 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">https://sinatorpool2.delqhi.com/inference/v1</span>{"\n"}
+                <span className="text-muted-foreground">Mac 3 → baseURL: </span>
+                <span className="text-emerald-500 font-medium">https://sinatorpool3.delqhi.com/inference/v1</span>{"\n\n"}
+                <span className="text-muted-foreground">apiKey (alle Macs gleich): </span>
                 <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>
               </pre>
             </CardContent>
@@ -226,7 +229,7 @@ export default function SetupPage() {
       "npm": "@ai-sdk/fireworks",
       "name": "Fireworks AI (SINator)",
           "options": {
-            "baseURL": "https://sinator.delqhi.com/inference/v1"
+            "baseURL": "https://sinatorpool1.delqhi.com/inference/v1"
           },
       "models": {
         "deepseek-v4-pro": {
@@ -287,7 +290,7 @@ export default function SetupPage() {
                 <p className="text-xs text-muted-foreground mb-1.5"><strong>Cursor:</strong> Settings → Models → Neuen Provider</p>
                 <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                   <span className="text-muted-foreground">Base URL: </span>
-                  <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                  <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
                   {"\n"}
                   <span className="text-muted-foreground">API Key:  </span>
                   <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
@@ -298,7 +301,7 @@ export default function SetupPage() {
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
                   <span className="text-muted-foreground">{`{ "models": [{`}</span>{"\n"}
                   <span className="text-muted-foreground">{`  "provider": `}</span><span className="text-emerald-500">{`"openai"`}</span><span className="text-muted-foreground">,</span>{"\n"}
-                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"https://sinator.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"https://sinatorpool1.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
                   <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"7avN1KkfInNqcOMn2CtwLTvx"`}</span>{"\n"}
                   <span className="text-muted-foreground">{`}] }`}</span>
                 </pre>
