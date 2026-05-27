@@ -311,7 +311,7 @@ export default function SetupPage() {
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
                   <span className="text-blue-400">from</span> openai <span className="text-blue-400">import</span> OpenAI{"\n"}
                   client = OpenAI({"\n"}
-                  {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinator.delqhi.com/inference/v1&quot;</span>,{"\n"}
+                  {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinatorpool1.delqhi.com/inference/v1&quot;</span>,{"\n"}
                   {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>,{"\n"}
                   )
                 </pre>
@@ -326,8 +326,8 @@ export default function SetupPage() {
                 <div>
                   <p className="text-sm font-medium mb-1">Lokal am Mac?</p>
                   <p className="text-xs text-muted-foreground">
-                    Kein API Key nötig — der Proxy erlaubt <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost</code> automatisch.
-                    Base URL dann: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:8888/inference/v1</code>
+                    Kein API Key nötig — Proxies erlauben <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost</code> automatisch.
+                    Base URLs: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:{8888,8889,8890}/inference/v1</code>
                   </p>
                 </div>
               </div>

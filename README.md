@@ -54,7 +54,9 @@ Provider-Switcher oben rechts im Header — HeyPiggy auf PiggyBank Icon (pink) u
 ## Remote Setup
 
 ```
-baseURL: https://sinator.delqhi.com/inference/v1
+baseURL: https://sinatorpool1.delqhi.com/inference/v1  (Mac 1)
+# Mac 2: https://sinatorpool2.delqhi.com/inference/v1
+# Mac 3: https://sinatorpool3.delqhi.com/inference/v1
 apiKey:  7avN1KkfInNqcOMn2CtwLTvx
 ```
 

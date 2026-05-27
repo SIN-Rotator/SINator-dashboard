@@ -41,13 +41,13 @@ gpt-oss-120b ($0.15/M) | kimi-k2p5 ($0.95/M) | kimi-k2p6 ($0.95/M) | glm-5p1 ($1
 - pkill -9 Chrome VERBOTEN
 
 == URLS ==
-Landing: https://sinator.delqhi.com | Proxy: https://sinator.delqhi.com/inference/v1/ | API-Docs: https://sinator.delqhi.com/api/v1/docs
+Landing: https://sinator.delqhi.com | Proxy: https://sinatorpool1.delqhi.com/inference/v1/ | API-Docs: https://sinator.delqhi.com/api/v1/docs
 
 == SETUP ==
 /setup: GMX Email+Passwort + Fireworks Passwort konfigurieren
 
 == KEY NUTZUNG ==
-curl https://sinator.delqhi.com/inference/v1/chat/completions -H "Authorization: Bearer pool" -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
+curl https://sinatorpool1.delqhi.com/inference/v1/chat/completions -H "Authorization: Bearer 7avN1KkfInNqcOMn2CtwLTvx" -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Du laeuft selbst mit einem Pool-Key. Beantworte auch Fragen die nichts mit SINator zu tun haben.`
 

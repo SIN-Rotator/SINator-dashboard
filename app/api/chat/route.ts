@@ -9,8 +9,8 @@ const FIREWORKS_MODEL =
 
 const fireworks = createOpenAICompatible({
   name: "fireworks",
-  baseURL: `${BACKEND}:8888/inference/v1`,
-  apiKey: "pool",
+  baseURL: `${BACKEND}:8888/inference/v1`,  // Local proxy — no auth needed for localhost
+  apiKey: "pool",  // Any value works for localhost
 })
 
 const BASE_KNOWLEDGE = `Du bist der SINator-Hilfe-Assistent. Antworte IMMER auf Deutsch. Sei kurz, freundlich und konkret. Verwende Markdown fuer Code und Listen. Keine Emojis.
@@ -20,18 +20,18 @@ SINator ist ein automatisierter Fireworks AI API-Key-Generator. Er erstellt GMX-
 
 Komponenten:
 - Backend (FastAPI, :8000): Pool-Management, Rotation-Orchestrierung, Browser-Steuerung
-- Pool-Proxy (aiohttp, :8888): SSE-Dashboard, Key-Leasing, auto-swap bei 401/412, CORS
+- 3× Pool-Proxy (aiohttp, :8888-:8890): SSE-Dashboard, Key-Leasing, auto-swap bei 401/412, CORS
 - Landing Page (:8040): Statische Website mit Live-Pool-Stats
-- Tunnel (Cloudflare Named Tunnel sinator.delqhi.com): Oeffentlicher Zugang
+- Tunnel (Cloudflare Named Tunnel): 3 Subdomains sinatorpool1/2/3.delqhi.com → je 1 Proxy
 - Chrome (Profil 901, CDP Port 9222): Browser fuer GMX/Fireworks-Automation
 - CUA-Driver: macOS Accessibility API fuer Klicks (nicht als Bot detektierbar!)
 - macOS Keychain: API-Keys verschluesselt gespeichert (com.sinator.pool)
-- LaunchAgents: com.sinator.backend, com.sinator.pool-proxy, com.sinator.tunnel, com.sinator.pages, com.sinator.chrome, com.sinator.cua-driver
+- LaunchAgents: com.sinator.backend, 3× com.sinator.pool-proxy, com.sinator.tunnel, com.sinator.pages, com.sinator.chrome, com.sinator.cua-driver
 
 == ROTATION FLOW (E2E) ==
 1. GMX Login (Playwright) → opensin@gmx.de → Cookies gespeichert
 2. GMX Session: IAC-Tab cleanup → www.gmx.net → "E-Mail" click → SID-Polling
-3. GMX Alias-Rotation: Playwright iframe delete + create (~28s)
+3. GMX Alias-Rotation: Playwright shadow DOM navigation → iframe delete + create (~41s)
 4. Fireworks Logout: CDP Network.deleteCookies (nur Fireworks-Domain!)
 5. Fireworks Signup: /signup → email → 2x password → Create Account
 6. OTP Poll: GMX MailCheck Extension → CDP OOPIF mailbody-ui.de → Verify-URL
@@ -48,11 +48,13 @@ Komponenten:
 - suspended: Von Fireworks gesperrt (Spending-Limit erreicht, $5 Credits aufgebraucht)
 
 == URLS ==
-- Dashboard: http://localhost:8888 (SSE Live-Stats)
+- Dashboard App: http://localhost:3000
 - Landing Page: https://sinator.delqhi.com
-- API-Docs: https://sinator.delqhi.com/api/v1/docs
-- Pool-Proxy: https://sinator.delqhi.com/inference/v1/
-- Auth-Token: Nicht oeffentlich teilen!
+- API-Docs: http://localhost:8000/docs
+- Pool-Proxy Mac 1: https://sinatorpool1.delqhi.com/inference/v1
+- Pool-Proxy Mac 2: https://sinatorpool2.delqhi.com/inference/v1
+- Pool-Proxy Mac 3: https://sinatorpool3.delqhi.com/inference/v1
+- API-Key (alle Macs): 7avN1KkfInNqcOMn2CtwLTvx
 
 == VERFUEGBARE MODELLE (Serverless) ==
 accounts/fireworks/models/gpt-oss-120b   ($0.15/M input, $0.60/M output)
@@ -81,9 +83,9 @@ R = Key holen, C = letzten Key kopieren
 - Passwoerter werden lokal in config.json gespeichert
 
 == KEY NUTZUNG ==
-Via Pool-Proxy:
-curl https://sinator.delqhi.com/inference/v1/chat/completions \\
-  -H "Authorization: Bearer pool" \\
+Via Pool-Proxy (Mac 1):
+curl https://sinatorpool1.delqhi.com/inference/v1/chat/completions \\
+  -H "Authorization: Bearer 7avN1KkfInNqcOMn2CtwLTvx" \\
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Direkt mit eigenem Key:
@@ -91,7 +93,7 @@ curl https://api.fireworks.ai/inference/v1/chat/completions \\
   -H "Authorization: Bearer DEIN_KEY" \\
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
-Hinweis: Du selbst laeuft mit einem Key aus dem SINator-Pool via den Pool-Proxy auf :8888.
+Hinweis: Du selbst laeuft mit einem Key aus dem SINator-Pool via den Pool-Proxy (localhost:8888, kein Auth nötig).
 
 Wenn jemand eine Frage stellt die nichts mit SINator zu tun hat, beantworte sie trotzdem kurz und hilfreich.`
 
@@ -163,7 +165,7 @@ export async function POST(req: Request) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
     return errorStream(
-      "Fehler beim Chat: " + msg + ". Ist der Pool-Proxy auf :8888 aktiv?",
+      "Fehler beim Chat: " + msg + ". Ist der Pool-Proxy aktiv?",
     )
   }
 }

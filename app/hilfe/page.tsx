@@ -129,7 +129,7 @@ export default function HilfePage() {
               <h3 className="text-sm font-medium mb-2">Endpunkt (für alle Clients gleich)</h3>
               <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <span className="text-muted-foreground">baseURL: </span>
-                <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
                 {"\n"}
                 <span className="text-muted-foreground">apiKey:  </span>
                 <span className="text-amber-500">7avN</span>
@@ -147,7 +147,7 @@ export default function HilfePage() {
               </p>
               <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto my-2">
                 <span className="text-muted-foreground">{`"options": { "baseURL": "`}</span>
-                <span className="text-emerald-500">{`https://sinator.delqhi.com/inference/v1`}</span>
+                <span className="text-emerald-500">{`https://sinatorpool1.delqhi.com/inference/v1`}</span>
                 <span className="text-muted-foreground">{`" }`}</span>
               </pre>
               <p className="text-xs text-muted-foreground mb-1">
@@ -171,7 +171,7 @@ export default function HilfePage() {
               </p>
               <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <span className="text-muted-foreground">Base URL = </span>
-                <span className="text-emerald-500">https://sinator.delqhi.com/inference/v1</span>
+                <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
                 {"\n"}
                 <span className="text-muted-foreground">API Key  = </span>
                 <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
