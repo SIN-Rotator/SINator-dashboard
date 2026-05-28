@@ -52,7 +52,7 @@ Komponenten:
 - Landing Page: https://sinator.delqhi.com
 - API-Docs: http://localhost:8000/docs
 - Pool-Router (alle Macs): https://sinatorpool-router.delqhi.com/inference/v1
-- API-Key (alle Macs): 7avN1KkfInNqcOMn2CtwLTvx
+- API-Key: <DEIN_API_KEY>
 
 == VERFUEGBARE MODELLE (Serverless) ==
 accounts/fireworks/models/gpt-oss-120b   ($0.15/M input, $0.60/M output)
@@ -83,7 +83,7 @@ R = Key holen, C = letzten Key kopieren
 == KEY NUTZUNG ==
 Via Pool-Router (alle Macs):
 curl https://sinatorpool-router.delqhi.com/inference/v1/chat/completions \\
-  -H "Authorization: Bearer 7avN1KkfInNqcOMn2CtwLTvx" \\
+  -H "Authorization: Bearer <DEIN_API_KEY>" \\
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Direkt mit eigenem Key:

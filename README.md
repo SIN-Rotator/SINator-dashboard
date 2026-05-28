@@ -57,7 +57,7 @@ Provider-Switcher oben rechts im Header — HeyPiggy auf PiggyBank Icon (pink) u
 
 ```
 baseURL: https://sinatorpool-router.delqhi.com/inference/v1
-apiKey:  7avN1KkfInNqcOMn2CtwLTvx
+apiKey:  <DEIN_API_KEY>
 ```
 
 Lokal am Mac: `http://localhost:9998/inference/v1` (ohne API-Key)
@@ -76,7 +76,7 @@ Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatis
     "fireworks-ai": {
       "options": {
         "baseURL": "http://localhost:9998/inference/v1",
-        "apiKey": "7avN1KkfInNqcOMn2CtwLTvx"
+        "apiKey": "<DEIN_API_KEY>"
       },
       "models": {
         "deepseek-v4-pro": { "id": "fireworks/deepseek-v4-pro" },

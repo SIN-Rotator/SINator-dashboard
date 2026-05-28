@@ -47,7 +47,7 @@ Landing: https://sinator.delqhi.com | Pool-Router: https://sinatorpool-router.de
 /setup: GMX Email+Passwort + Fireworks Passwort konfigurieren
 
 == KEY NUTZUNG ==
-curl https://sinatorpool-router.delqhi.com/inference/v1/chat/completions -H "Authorization: Bearer 7avN1KkfInNqcOMn2CtwLTvx" -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
+curl https://sinatorpool-router.delqhi.com/inference/v1/chat/completions -H "Authorization: Bearer <DEIN_API_KEY>" -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
 Du laeuft selbst mit einem Pool-Key. Beantworte auch Fragen die nichts mit SINator zu tun haben.`
 

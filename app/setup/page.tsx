@@ -200,7 +200,7 @@ export default function SetupPage() {
                 <span className="text-muted-foreground">baseURL: </span>
                 <span className="text-emerald-500 font-medium">https://sinatorpool-router.delqhi.com/inference/v1</span>{"\n\n"}
                 <span className="text-muted-foreground">apiKey:     </span>
-                <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>{"\n\n"}
+                <span className="text-amber-500 font-medium">7avN...</span>{"\n\n"}
                 <span className="text-muted-foreground text-[10px]">Lokal am Mac (ohne API-Key): </span>
                 <span className="text-emerald-500 font-medium text-[10px]">http://localhost:9998/inference/v1</span>
               </pre>
@@ -267,7 +267,7 @@ export default function SetupPage() {
                   <span className="text-blue-400">export </span>
                   <span className="text-foreground">FIREWORKS_API_KEY</span>
                   <span className="text-muted-foreground">=</span>
-                  <span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>
+                  <span className="text-amber-500">&quot;<DEIN_API_KEY>&quot;</span>
                 </pre>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -292,7 +292,7 @@ export default function SetupPage() {
                   <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                   {"\n"}
                   <span className="text-muted-foreground">API Key:  </span>
-                  <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
+                  <span className="text-amber-500"><DEIN_API_KEY></span>
                 </pre>
               </div>
               <div>
@@ -301,7 +301,7 @@ export default function SetupPage() {
                   <span className="text-muted-foreground">{`{ "models": [{`}</span>{"\n"}
                   <span className="text-muted-foreground">{`  "provider": `}</span><span className="text-emerald-500">{`"openai"`}</span><span className="text-muted-foreground">,</span>{"\n"}
                   <span className="text-muted-foreground">{`  "apiBase": `}</span>                  <span className="text-emerald-500">{`"https://sinatorpool-router.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
-                  <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"7avN1KkfInNqcOMn2CtwLTvx"`}</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"<DEIN_API_KEY>"`}</span>{"\n"}
                   <span className="text-muted-foreground">{`}] }`}</span>
                 </pre>
               </div>
@@ -311,7 +311,7 @@ export default function SetupPage() {
                   <span className="text-blue-400">from</span> openai <span className="text-blue-400">import</span> OpenAI{"\n"}
                   client = OpenAI({"\n"}
                   {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinatorpool-router.delqhi.com/inference/v1&quot;</span>,{"\n"}
-                  {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>,{"\n"}
+                  {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;<DEIN_API_KEY>&quot;</span>,{"\n"}
                   )
                 </pre>
               </div>
