@@ -147,7 +147,7 @@ export default function HilfePage() {
               </p>
               <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto my-2">
                 <span className="text-muted-foreground">{`"options": { "baseURL": "`}</span>
-                <span className="text-emerald-500">{`https://sinatorpool1.delqhi.com/inference/v1`}</span>
+                <span className="text-emerald-500">{`https://sinatorpool-router.delqhi.com/inference/v1`}</span>
                 <span className="text-muted-foreground">{`" }`}</span>
               </pre>
               <p className="text-xs text-muted-foreground mb-1">
