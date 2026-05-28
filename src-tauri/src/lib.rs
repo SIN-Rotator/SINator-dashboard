@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-const PROXY_URL: &str = "http://localhost:8888/inference/v1/chat/completions";
+const PROXY_URL: &str = "http://localhost:9998/inference/v1/chat/completions";
 const MODEL: &str = "accounts/fireworks/models/gpt-oss-120b";
 const SYSTEM_PROMPT: &str = include_str!("../chat-system-prompt.txt");
 
