@@ -189,21 +189,23 @@ export default function SetupPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Globe className="size-4 text-emerald-500" />
-                3 dedizierte Pool-URLs — je Mac eine
+                3 dedizierte Pool-URLs + lokaler Router — Auto-Failover
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground mb-3">
-                Jeder Mac bekommt seinen eigenen Proxy mit eigenem API-Key aus dem Pool. Kein Teilen, keine Contention.
+                Direkte Pools f&uuml;r Remote-Clients (Cursor, Continue, Python SDK). Lokal am Mac den Pool-Router auf <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">:9998</code> nutzen — der leitet bei 413/429/412/5xx automatisch zum n&auml;chsten Pool weiter.
               </p>
               <pre className="bg-muted p-4 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
-                <span className="text-muted-foreground">Mac 1 → baseURL: </span>
+                <span className="text-muted-foreground">Pool-Router (Auto-Failover): </span>
+                <span className="text-emerald-500 font-medium">http://localhost:9998/inference/v1</span>{"\n"}
+                <span className="text-muted-foreground">Direkt Pool 1: </span>
                 <span className="text-emerald-500 font-medium">https://sinatorpool1.delqhi.com/inference/v1</span>{"\n"}
-                <span className="text-muted-foreground">Mac 2 → baseURL: </span>
+                <span className="text-muted-foreground">Direkt Pool 2: </span>
                 <span className="text-emerald-500 font-medium">https://sinatorpool2.delqhi.com/inference/v1</span>{"\n"}
-                <span className="text-muted-foreground">Mac 3 → baseURL: </span>
+                <span className="text-muted-foreground">Direkt Pool 3: </span>
                 <span className="text-emerald-500 font-medium">https://sinatorpool3.delqhi.com/inference/v1</span>{"\n\n"}
-                <span className="text-muted-foreground">apiKey (alle Macs gleich): </span>
+                <span className="text-muted-foreground">apiKey (alle gleich): </span>
                 <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>
               </pre>
             </CardContent>
@@ -220,7 +222,7 @@ export default function SetupPage() {
             <CardContent className="space-y-3">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">
-                  1. Erstelle (oder ergänze) <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> — hier die komplette Datei:
+                  1. Erstelle (oder erg&auml;nze) <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> — hier die komplette Datei (Pool-Router <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">:9998</code> f&uuml;r Auto-Failover, 413/429/412/5xx werden automatisch umgeleitet):
                 </p>
                 <pre className="bg-muted p-4 rounded-lg text-[10px] font-mono overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto">
 {`{
@@ -228,9 +230,9 @@ export default function SetupPage() {
     "fireworks-ai": {
       "npm": "@ai-sdk/fireworks",
       "name": "Fireworks AI (SINator)",
-          "options": {
-            "baseURL": "https://sinatorpool1.delqhi.com/inference/v1"
-          },
+      "options": {
+        "baseURL": "http://localhost:9998/inference/v1"
+      },
       "models": {
         "deepseek-v4-pro": {
           "id": "fireworks/deepseek-v4-pro",
@@ -273,7 +275,7 @@ export default function SetupPage() {
                 </pre>
               </div>
               <p className="text-xs text-muted-foreground">
-                Bestehende opencode.json? Nur den <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">provider.fireworks-ai</code> Block in dein existierendes <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">"provider"</code> Objekt einfügen.
+                Bestehende opencode.json? Nur den <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">provider.fireworks-ai</code> Block in dein existierendes <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">"provider"</code> Objekt einf&uuml;gen.
               </p>
             </CardContent>
           </Card>
@@ -284,6 +286,7 @@ export default function SetupPage() {
                 <Code className="size-4" />
                 Cursor / Continue / Python SDK
               </div>
+              <CardDescription>Remote-Clients nutzen die direkten Pool-URLs (kein Router)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -324,10 +327,10 @@ export default function SetupPage() {
               <div className="flex items-start gap-3">
                 <Monitor className="size-4 text-blue-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-sm font-medium mb-1">Lokal am Mac?</p>
+                  <p className="text-sm font-medium mb-1">Lokal am Mac (Pool-Router)?</p>
                   <p className="text-xs text-muted-foreground">
-                    Kein API Key nötig — Proxies erlauben <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost</code> automatisch.
-                    Base URLs: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:{8888,8889,8890}/inference/v1</code>
+                    Kein API Key n&ouml;tig — Pool-Router auf <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost:9998</code> mit Auto-Failover. Einfach <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">baseURL: http://localhost:9998/inference/v1</code> setzen.
+                    Ohne Router geht auch direkt: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:8888/inference/v1</code> (nur ein Pool, kein Failover).
                   </p>
                 </div>
               </div>
