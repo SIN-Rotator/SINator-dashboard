@@ -189,24 +189,20 @@ export default function SetupPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center gap-2 text-sm font-medium">
                 <Globe className="size-4 text-emerald-500" />
-                3 dedizierte Pool-URLs + lokaler Router — Auto-Failover
+                Pool-Router — EINE Base-URL, 10 Proxys, Auto-Failover
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-xs text-muted-foreground mb-3">
-                Direkte Pools f&uuml;r Remote-Clients (Cursor, Continue, Python SDK). Lokal am Mac den Pool-Router auf <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">:9998</code> nutzen — der leitet bei 413/429/412/5xx automatisch zum n&auml;chsten Pool weiter.
+                Einzige &ouml;ffentliche URL. Der Router verteilt automatisch auf 10 Proxys mit je eigenem API-Key. Bei 413/429/412/5xx wird zum n&auml;chsten Proxy gesprungen. Kein gegenseitiges Blockieren, kein manuelles Pool-Wechseln.
               </p>
               <pre className="bg-muted p-4 rounded-lg text-xs font-mono overflow-x-auto leading-relaxed">
-                <span className="text-muted-foreground">Pool-Router (Auto-Failover): </span>
-                <span className="text-emerald-500 font-medium">http://localhost:9998/inference/v1</span>{"\n"}
-                <span className="text-muted-foreground">Direkt Pool 1: </span>
-                <span className="text-emerald-500 font-medium">https://sinatorpool1.delqhi.com/inference/v1</span>{"\n"}
-                <span className="text-muted-foreground">Direkt Pool 2: </span>
-                <span className="text-emerald-500 font-medium">https://sinatorpool2.delqhi.com/inference/v1</span>{"\n"}
-                <span className="text-muted-foreground">Direkt Pool 3: </span>
-                <span className="text-emerald-500 font-medium">https://sinatorpool3.delqhi.com/inference/v1</span>{"\n\n"}
-                <span className="text-muted-foreground">apiKey (alle gleich): </span>
-                <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>
+                <span className="text-muted-foreground">baseURL: </span>
+                <span className="text-emerald-500 font-medium">https://sinatorpool-router.delqhi.com/inference/v1</span>{"\n\n"}
+                <span className="text-muted-foreground">apiKey:     </span>
+                <span className="text-amber-500 font-medium">7avN1KkfInNqcOMn2CtwLTvx</span>{"\n\n"}
+                <span className="text-muted-foreground text-[10px]">Lokal am Mac (ohne API-Key): </span>
+                <span className="text-emerald-500 font-medium text-[10px]">http://localhost:9998/inference/v1</span>
               </pre>
             </CardContent>
           </Card>
@@ -222,7 +218,7 @@ export default function SetupPage() {
             <CardContent className="space-y-3">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5">
-                  1. Erstelle (oder erg&auml;nze) <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> — hier die komplette Datei (Pool-Router <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">:9998</code> f&uuml;r Auto-Failover, 413/429/412/5xx werden automatisch umgeleitet):
+                  1. Erstelle (oder erg&auml;nze) <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">~/.config/opencode/opencode.json</code> &mdash; hier die komplette Datei (ffentliche Pool-Router-URL <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">sinatorpool-router.delqhi.com</code>, Auto-Failover &uuml;ber 10 Proxys):
                 </p>
                 <pre className="bg-muted p-4 rounded-lg text-[10px] font-mono overflow-x-auto leading-relaxed max-h-[400px] overflow-y-auto">
 {`{
@@ -231,7 +227,7 @@ export default function SetupPage() {
       "npm": "@ai-sdk/fireworks",
       "name": "Fireworks AI (SINator)",
       "options": {
-        "baseURL": "http://localhost:9998/inference/v1"
+        "baseURL": "https://sinatorpool-router.delqhi.com/inference/v1"
       },
       "models": {
         "deepseek-v4-pro": {
@@ -286,14 +282,14 @@ export default function SetupPage() {
                 <Code className="size-4" />
                 Cursor / Continue / Python SDK
               </div>
-              <CardDescription>Remote-Clients nutzen die direkten Pool-URLs (kein Router)</CardDescription>
+              <CardDescription>Remote-Clients nutzen dieselbe Pool-Router-URL</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <p className="text-xs text-muted-foreground mb-1.5"><strong>Cursor:</strong> Settings → Models → Neuen Provider</p>
                 <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                   <span className="text-muted-foreground">Base URL: </span>
-                  <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
+                  <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                   {"\n"}
                   <span className="text-muted-foreground">API Key:  </span>
                   <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
@@ -304,7 +300,7 @@ export default function SetupPage() {
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
                   <span className="text-muted-foreground">{`{ "models": [{`}</span>{"\n"}
                   <span className="text-muted-foreground">{`  "provider": `}</span><span className="text-emerald-500">{`"openai"`}</span><span className="text-muted-foreground">,</span>{"\n"}
-                  <span className="text-muted-foreground">{`  "apiBase": `}</span><span className="text-emerald-500">{`"https://sinatorpool1.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
+                  <span className="text-muted-foreground">{`  "apiBase": `}</span>                  <span className="text-emerald-500">{`"https://sinatorpool-router.delqhi.com/inference/v1"`}</span><span className="text-muted-foreground">,</span>{"\n"}
                   <span className="text-muted-foreground">{`  "apiKey": `}</span><span className="text-amber-500">{`"7avN1KkfInNqcOMn2CtwLTvx"`}</span>{"\n"}
                   <span className="text-muted-foreground">{`}] }`}</span>
                 </pre>
@@ -314,7 +310,7 @@ export default function SetupPage() {
                 <pre className="bg-muted p-3 rounded-lg text-[11px] font-mono overflow-x-auto leading-relaxed">
                   <span className="text-blue-400">from</span> openai <span className="text-blue-400">import</span> OpenAI{"\n"}
                   client = OpenAI({"\n"}
-                  {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinatorpool1.delqhi.com/inference/v1&quot;</span>,{"\n"}
+                  {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinatorpool-router.delqhi.com/inference/v1&quot;</span>,{"\n"}
                   {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;7avN1KkfInNqcOMn2CtwLTvx&quot;</span>,{"\n"}
                   )
                 </pre>
@@ -327,10 +323,9 @@ export default function SetupPage() {
               <div className="flex items-start gap-3">
                 <Monitor className="size-4 text-blue-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-sm font-medium mb-1">Lokal am Mac (Pool-Router)?</p>
+                  <p className="text-sm font-medium mb-1">Nur EINE URL &mdash; f&uuml;r alle</p>
                   <p className="text-xs text-muted-foreground">
-                    Kein API Key n&ouml;tig — Pool-Router auf <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">localhost:9998</code> mit Auto-Failover. Einfach <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">baseURL: http://localhost:9998/inference/v1</code> setzen.
-                    Ohne Router geht auch direkt: <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:8888/inference/v1</code> (nur ein Pool, kein Failover).
+                    <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">https://sinatorpool-router.delqhi.com/inference/v1</code> &mdash; eine Base-URL f&uuml;r alle Clients (lokal, remote, Cursor, Continue, Python). Der Router verteilt auf 10 Proxys mit Auto-Failover. Lokal am Mac geht auch <code className="bg-muted px-1.5 py-0.5 rounded text-[11px] font-mono">http://localhost:9998/inference/v1</code> ohne API-Key.
                   </p>
                 </div>
               </div>
