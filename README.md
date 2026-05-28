@@ -53,12 +53,16 @@ Provider-Switcher oben rechts im Header — HeyPiggy auf PiggyBank Icon (pink) u
 
 ## Remote Setup
 
+**NUR EINE URL** — Pool-Router mit Auto-Failover über 10 Proxys:
+
 ```
-baseURL: https://sinatorpool1.delqhi.com/inference/v1  (Mac 1)
-# Mac 2: https://sinatorpool2.delqhi.com/inference/v1
-# Mac 3: https://sinatorpool3.delqhi.com/inference/v1
+baseURL: https://sinatorpool-router.delqhi.com/inference/v1
 apiKey:  7avN1KkfInNqcOMn2CtwLTvx
 ```
+
+Lokal am Mac: `http://localhost:9998/inference/v1` (ohne API-Key)
+
+Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatisch zum nächsten Proxy.
 
 ## Tech Stack
 
