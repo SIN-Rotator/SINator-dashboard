@@ -129,7 +129,7 @@ export default function HilfePage() {
               <h3 className="text-sm font-medium mb-2">Endpunkt (für alle Clients gleich)</h3>
               <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <span className="text-muted-foreground">baseURL: </span>
-                <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
+                <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                 {"\n"}
                 <span className="text-muted-foreground">apiKey:  </span>
                 <span className="text-amber-500">7avN</span>
@@ -171,7 +171,7 @@ export default function HilfePage() {
               </p>
               <pre className="bg-muted p-3 rounded-lg text-xs font-mono overflow-x-auto">
                 <span className="text-muted-foreground">Base URL = </span>
-                <span className="text-emerald-500">https://sinatorpool1.delqhi.com/inference/v1</span>
+                <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                 {"\n"}
                 <span className="text-muted-foreground">API Key  = </span>
                 <span className="text-amber-500">7avN1KkfInNqcOMn2CtwLTvx</span>
@@ -179,7 +179,7 @@ export default function HilfePage() {
             </div>
 
             <div className="text-xs text-muted-foreground border-t pt-4">
-              <strong className="text-foreground">Lokal am Mac?</strong> Kein API Key nötig — der Proxy erlaubt <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">localhost</code> automatisch.
+              <strong className="text-foreground">Lokal am Mac?</strong> <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">http://localhost:9998/inference/v1</code> — kein API Key nötig, der Pool-Router erlaubt <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">localhost</code> automatisch.
             </div>
           </div>
         </Card>

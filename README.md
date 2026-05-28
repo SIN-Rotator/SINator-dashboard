@@ -64,6 +64,43 @@ Lokal am Mac: `http://localhost:9998/inference/v1` (ohne API-Key)
 
 Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatisch zum nächsten Proxy.
 
+## OpenCode Config
+
+Öffne `~/.config/opencode/opencode.json` und ergänze den `provider.fireworks-ai` Abschnitt mit der Pool-Router Base-URL:
+
+![OpenCode Config Pfad](docs/images/opencode-config-path.png)
+
+```json
+{
+  "provider": {
+    "fireworks-ai": {
+      "options": {
+        "baseURL": "http://localhost:9998/inference/v1",
+        "apiKey": "7avN1KkfInNqcOMn2CtwLTvx"
+      },
+      "models": {
+        "deepseek-v4-pro": { "id": "fireworks/deepseek-v4-pro" },
+        "kimi-k2p6":      { "id": "fireworks/kimi-k2p6" }
+      }
+    }
+  }
+}
+```
+
+## API-Key Lifecycle & Proxy-Sprung
+
+**Der Pool-Router markiert KEINE Keys als benutzt/gesperrt beim Springen zwischen Proxys.**
+
+| Aktion | Key Status |
+|--------|-----------|
+| Proxy 1 gibt 412/429/5xx | Router springt zu Proxy 2 → Key bleibt **available** |
+| Proxy 2 gibt 412/429/5xx | Router springt zu Proxy 3 → Key bleibt **available** |
+| **Alle** 10 Proxys geben selben Fehler | Fehler wird durchgereicht → Key bleibt **available** |
+| API gibt echten `suspended`/401/403 Fehler | Key wird als **suspended** markiert |
+
+Ein Proxy-Sprung bedeutet nicht, dass der Key kaputt ist — nur dass der aktuelle Proxy überlastet/ratelimited war.
+Erst wenn der API eindeutig sagt "Account suspended" oder "unauthorized", wird der Key als benutzt markiert und aus dem Pool entfernt.
+
 ## Tech Stack
 
 - Next.js 16 + React 19 (Static Export)
