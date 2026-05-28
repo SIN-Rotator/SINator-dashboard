@@ -267,7 +267,7 @@ export default function SetupPage() {
                   <span className="text-blue-400">export </span>
                   <span className="text-foreground">FIREWORKS_API_KEY</span>
                   <span className="text-muted-foreground">=</span>
-                  <span className="text-amber-500">&quot;<DEIN_API_KEY>&quot;</span>
+                  <span className="text-amber-500">{`"<DEIN_API_KEY>"`}</span>
                 </pre>
               </div>
               <p className="text-xs text-muted-foreground">
@@ -292,7 +292,7 @@ export default function SetupPage() {
                   <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                   {"\n"}
                   <span className="text-muted-foreground">API Key:  </span>
-                  <span className="text-amber-500"><DEIN_API_KEY></span>
+                  <span className="text-amber-500">{`<DEIN_API_KEY>`}</span>
                 </pre>
               </div>
               <div>
@@ -311,7 +311,7 @@ export default function SetupPage() {
                   <span className="text-blue-400">from</span> openai <span className="text-blue-400">import</span> OpenAI{"\n"}
                   client = OpenAI({"\n"}
                   {"  "}<span className="text-foreground">base_url</span>=<span className="text-emerald-500">&quot;https://sinatorpool-router.delqhi.com/inference/v1&quot;</span>,{"\n"}
-                  {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">&quot;<DEIN_API_KEY>&quot;</span>,{"\n"}
+                  {"  "}<span className="text-foreground">api_key</span>=<span className="text-amber-500">{`"<DEIN_API_KEY>"`}</span>,{"\n"}
                   )
                 </pre>
               </div>

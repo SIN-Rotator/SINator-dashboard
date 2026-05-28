@@ -157,7 +157,7 @@ export default function HilfePage() {
                 <span className="text-blue-400">export </span>
                 <span className="text-foreground">FIREWORKS_API_KEY</span>
                 <span className="text-muted-foreground">=</span>
-                <span className="text-amber-500">&quot;<DEIN_API_KEY>&quot;</span>
+                <span className="text-amber-500">{`"<DEIN_API_KEY>"`}</span>
               </pre>
               <p className="text-xs text-muted-foreground">
                 Das SDK <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">@ai-sdk/fireworks</code> liest <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">FIREWORKS_API_KEY</code> automatisch als <code className="px-1 py-0.5 rounded bg-muted font-mono text-[11px]">Authorization: Bearer</code> Header.
@@ -174,7 +174,7 @@ export default function HilfePage() {
                 <span className="text-emerald-500">https://sinatorpool-router.delqhi.com/inference/v1</span>
                 {"\n"}
                 <span className="text-muted-foreground">API Key  = </span>
-                <span className="text-amber-500"><DEIN_API_KEY></span>
+                <span className="text-amber-500">{`<DEIN_API_KEY>`}</span>
               </pre>
             </div>
 
