@@ -2,6 +2,8 @@
 
 Web-Dashboard für den SINator Rotator. Verwaltet Fireworks API Keys + HeyPiggy Accounts. Pool-Statistiken, Rotation, Live-Logs.
 
+**[📖 Installationsanleitung](INSTALL.md)** — Schritt-für-Schritt mit Prerequisites-Checks und Verifikation.
+
 ## Quick Start (Alles automatisch)
 
 ```bash
