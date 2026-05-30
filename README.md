@@ -1,5 +1,7 @@
 # SINator Dashboard
 
+[![graphify](https://img.shields.io/badge/graphify-knowledge%20graph-8A2BE2)](graphify-out/graph.json)
+
 Web-Dashboard für den SINator Rotator. Verwaltet Fireworks API Keys + HeyPiggy Accounts. Pool-Statistiken, Rotation, Live-Logs.
 
 **[📖 Installationsanleitung](INSTALL.md)** — Schritt-für-Schritt mit Prerequisites-Checks und Verifikation.
