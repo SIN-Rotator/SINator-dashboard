@@ -23,18 +23,23 @@ export default function SetupPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [apiKey, setApiKey] = useState("")
 
   useEffect(() => {
-    getConfig(CONFIG_PREFIX, CONFIG_BACKEND).then((cfg: ConfigData) => {
-      setGmxEmail(cfg.gmx_email)
-      setGmxPassword(cfg.gmx_password)
-      setFireworksPassword(cfg.fireworks_password)
-      setLoading(false)
-    }).catch(() => {
-      setGmxEmail("opensin@gmx.de")
-      setFireworksPassword("ZOE.jerry2024!")
-      setLoading(false)
-    })
+    Promise.all([
+      getConfig(CONFIG_PREFIX, CONFIG_BACKEND).then((cfg: ConfigData) => {
+        setGmxEmail(cfg.gmx_email)
+        setGmxPassword(cfg.gmx_password)
+        setFireworksPassword(cfg.fireworks_password)
+      }).catch(() => {
+        setGmxEmail("opensin@gmx.de")
+        setFireworksPassword("ZOE.jerry2024!")
+      }),
+      fetch(`${CONFIG_BACKEND}${CONFIG_PREFIX}/pool-lease?leased_to=setup&ttl_seconds=3600`, { cache: "no-store" })
+        .then(r => r.json())
+        .then(d => { if (d.api_key) setApiKey(d.api_key) })
+        .catch(() => {})
+    ]).finally(() => setLoading(false))
   }, [])
 
   async function handleSave(e: React.FormEvent) {
@@ -200,7 +205,7 @@ export default function SetupPage() {
                 <span className="text-muted-foreground">baseURL: </span>
                 <span className="text-emerald-500 font-medium">https://sinatorpool-router.delqhi.com/inference/v1</span>{"\n\n"}
                 <span className="text-muted-foreground">apiKey:     </span>
-                <span className="text-amber-500 font-medium">7avN...</span>{"\n\n"}
+                <span className="text-amber-500 font-medium">{apiKey || "7avN..."}</span>{"\n\n"}
                 <span className="text-muted-foreground text-[10px]">Lokal am Mac (ohne API-Key): </span>
                 <span className="text-emerald-500 font-medium text-[10px]">http://localhost:9998/inference/v1</span>
               </pre>
