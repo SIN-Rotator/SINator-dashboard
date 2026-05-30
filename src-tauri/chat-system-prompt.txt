@@ -78,6 +78,6 @@ curl https://api.fireworks.ai/inference/v1/chat/completions \
   -H "Authorization: Bearer DEIN_KEY" \
   -d '{"model":"accounts/fireworks/models/gpt-oss-120b","messages":[{"role":"user","content":"Hi"}]}'
 
-Hinweis: Du selbst laeuft mit einem Key aus dem SINator-Pool via den Pool-Router (localhost:9998, kein Auth nötig).
+Hinweis: Du selbst laeuft mit einem Key aus dem SINator-Pool via den Pool-Router (sinatorpool-router.delqhi.com, kein Auth nötig).
 
 Wenn jemand eine Frage stellt die nichts mit SINator zu tun hat, beantworte sie trotzdem kurz und hilfreich.

@@ -36,8 +36,8 @@ Bei Remote-Betrieb die `NEXT_PUBLIC_API_URL` entsprechend setzen (z.B. `https://
 
 **Chat-Assistent Config:**
 - **Datei:** `src-tauri/chat-system-prompt.txt`
-- **Modell:** `accounts/fireworks/models/gpt-oss-120b` (via Pool-Proxy :9998)
-- **Pool-Router URL:** `http://localhost:9998` (hardcoded in `main.rs`)
+- **Modell:** `accounts/fireworks/models/gpt-oss-120b` (via Pool-Router)
+- **Pool-Router URL:** `https://sinatorpool-router.delqhi.com/inference/v1` (hardcoded in `main.rs`)
 
 ---
 
@@ -61,7 +61,7 @@ Für CLI/OpenCode Integration die Pool-Router URL in `~/.config/opencode/opencod
   "provider": {
     "fireworks-ai": {
       "options": {
-        "baseURL": "http://localhost:9998/inference/v1",
+        "baseURL": "https://sinatorpool-router.delqhi.com/inference/v1",
         "apiKey": "<DEIN_API_KEY>"
       }
     }

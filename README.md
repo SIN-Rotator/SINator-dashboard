@@ -66,7 +66,7 @@ baseURL: https://sinatorpool-router.delqhi.com/inference/v1
 apiKey:  <DEIN_API_KEY>
 ```
 
-Lokal am Mac: `http://localhost:9998/inference/v1` (ohne API-Key)
+Lokal am Mac: `http://localhost:9998/inference/v1` (ohne API-Key, nur Entwicklung)
 
 Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatisch zum nächsten Proxy.
 
@@ -81,7 +81,7 @@ Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatis
   "provider": {
     "fireworks-ai": {
       "options": {
-        "baseURL": "http://localhost:9998/inference/v1",
+        "baseURL": "https://sinatorpool-router.delqhi.com/inference/v1",
         "apiKey": "<DEIN_API_KEY>"
       },
       "models": {
