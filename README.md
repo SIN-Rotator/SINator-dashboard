@@ -1,6 +1,8 @@
 # SINator Dashboard
 
-[![graphify](https://img.shields.io/badge/graphify-knowledge%20graph-8A2BE2)](graphify-out/graph.json)
+[![GitNexus](https://img.shields.io/badge/GitNexus-knowledge%20graph-8B5CF6)](.gitnexus/)
+
+> **⚠️ GitNexus-Pflicht:** Bevor du Code in diesem Repo änderst, MUSST du `gitnexus_impact()` (Blast Radius) und `gitnexus_detect_changes()` (vor Commit) ausführen. Siehe [GitNexus Guide](.gitnexus/).
 
 Web-Dashboard für den SINator Rotator. Verwaltet Fireworks API Keys + HeyPiggy Accounts. Pool-Statistiken, Rotation, Live-Logs.
 

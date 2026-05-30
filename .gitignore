@@ -1,19 +1,18 @@
-# v0 sandbox internal files
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
-.snowflake/
-.v0-trash/
-.vercel/
-
-# Environment variables
-.env*.local
-
-# Common ignores
-node_modules
-.next/
-out/
-.DS_Store
-
-# Graphify (auto-generated)
-graphify-out/
+1:1:# v0 sandbox internal files
+2:2:__v0_runtime_loader.js
+3:3:__v0_devtools.tsx
+4:4:__v0_jsx-dev-runtime.ts
+5:5:.snowflake/
+6:6:.v0-trash/
+7:7:.vercel/
+8:8:
+9:9:# Environment variables
+10:10:.env*.local
+11:11:
+12:12:# Common ignores
+13:13:node_modules
+14:14:.next/
+15:15:out/
+16:16:.DS_Store
+17:17:
+19:20:.gitnexus

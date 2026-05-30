@@ -1,0 +1,14 @@
+{
+  "repoPath": "/Users/jeremy/dev/SINator-dashboard",
+  "lastCommit": "ce674e694514b387f128b94b80e7e910d2fe7dde",
+  "indexedAt": "2026-05-30T00:51:09.454Z",
+  "remoteUrl": "git@github.com:SIN-Rotator/SINator-dashboard",
+  "stats": {
+    "files": 114,
+    "nodes": 960,
+    "edges": 1835,
+    "communities": 20,
+    "processes": 32,
+    "embeddings": 0
+  }
+}
