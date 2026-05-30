@@ -13,6 +13,7 @@ Tauri v2 Rust Commands: Chat-Assistent via Pool-Proxy, Live-Pool-Stats im System
 | Command | Zweck |
 |---------|-------|
 | `chat_send(message)` | Chat-Message an Pool-Proxy senden (gpt-oss-120b) |
+| `open_terminal_rotate(password, count)` | Terminal.app öffnen mit `python3 tools/rotate.py` (via osascript) |
 
 ## Config / Limits
 
@@ -21,9 +22,14 @@ Tauri v2 Rust Commands: Chat-Assistent via Pool-Proxy, Live-Pool-Stats im System
 - **Auth:** `Bearer pool` (Proxy ignoriert Auth für lokale Requests)
 - **max_tokens:** 1024
 - **Fallback:** `reasoning_content` wenn `content` leer
+- **ROTATE_PATH:** `/Users/jeremy/dev/SINator-fireworksai`
+- **CDP_PORT:** `9222`
+- **Config-Backend:** `http://localhost:8000/api/v1/config`
 
 ## Wichtige Entscheidungen
 
+- **Terminal statt API für Rotation:** `open_terminal_rotate` öffnet Terminal via osascript → `python3 tools/rotate.py` direkt. Key landet im Pool via `--save`. Kein API-Endpoint-Timeout-Problem mehr.
+- **Escaping CRITICAL:** osascript: `"` → `\"`. Shell: Single-Quotes für Pfade/Args (`'`). NICHT `\` escapen (Doppel-Escaping zerstört Befehl).
 - **Rust Command statt Frontend-Fetch:** Tauri WebView blockiert `fetch()` zu localhost → Rust macht HTTP-Call
 - **Live-Context-Injektion:** `fetch_live_context()` holt Pool-Stats + Backend-Health → in System-Prompt
 - **Statischer Export:** `output: "export"` → Kein Server-Rendering → Nach Build KEIN Hot-Reload

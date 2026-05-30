@@ -294,13 +294,8 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
     try {
       const msg = await invoke("open_terminal_rotate", { password, count: total })
       toast.success("Terminal geöffnet", {
-        description: `Rotation für ${total} ${total === 1 ? provider.itemNoun : provider.itemNounPlural} läuft im Terminal…`,
+        description: `Rotation für ${total} ${total === 1 ? provider.itemNoun : provider.itemNounPlural} läuft im Terminal-Fenster. Key landet automatisch im Pool.`,
       })
-      setPhase("running")
-      setStartedAt(Date.now())
-      setElapsed(0)
-      setCurrentRun(0)
-      setProgressIdx(0)
     } catch (e) {
       toast.error("Terminal konnte nicht geöffnet werden", {
         description: (e as Error).message,

@@ -121,24 +121,27 @@ async fn open_terminal_rotate(password: String, count: u32) -> Result<String, St
         .await
         .map_err(|e| format!("Config-Fehler: {}", e))?;
 
-    let rotate_cmd = if count <= 1 {
+    let rotate_cmd = format!(
+        "cd '{}' && python3 tools/rotate.py --gmx-email '{}' --gmx-password '{}' --password '{}' --cdp-port {}",
+        ROTATE_PATH, cfg.gmx_email, cfg.gmx_password, password, CDP_PORT
+    );
+
+    let shell_cmd = if count <= 1 {
         format!(
-            "cd \"{}\" && python3 tools/rotate.py --gmx-email \"{}\" --gmx-password \"{}\" --password \"{}\" --cdp-port {}; echo; echo '--- Fertig. Drücke Enter zum Schließen ---'; read",
-            ROTATE_PATH, cfg.gmx_email, cfg.gmx_password, password, CDP_PORT
+            "{}; echo; echo '--- Fertig. Enter zum Schließen ---'; read",
+            rotate_cmd
         )
     } else {
         format!(
-            "cd \"{}\" && for i in $(seq 1 {}); do echo \\\"=== Rotation \\$i von {} ===\\\"; python3 tools/rotate.py --gmx-email \\\"{}\\\" --gmx-password \\\"{}\\\" --password \\\"{}\\\" --cdp-port {}; done; echo; echo '--- Alle {} fertig. Drücke Enter zum Schließen ---'; read",
-            ROTATE_PATH, count, count, cfg.gmx_email, cfg.gmx_password, password, CDP_PORT, count
+            "for i in $(seq 1 {}); do echo \"=== Rotation $i von {} ===\"; {}; done; echo; echo '--- Alle {} fertig. Enter zum Schließen ---'; read",
+            count, count, rotate_cmd, count
         )
     };
 
-    let escaped = rotate_cmd
-        .replace("\\", "\\\\")
-        .replace("\"", "\\\"");
+    let escaped = shell_cmd.replace("\"", "\\\"");
 
     let script = format!(
-        "tell application \"Terminal\" to do script \"{}\"",
+        "tell application \"Terminal\"\n    activate\n    do script \"{}\"\nend tell",
         escaped
     );
 

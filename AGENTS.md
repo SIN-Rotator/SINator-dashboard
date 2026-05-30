@@ -1,19 +1,19 @@
-# AGENTS.md — SINator Dashboard (2026-05-30, V15.1)
+# AGENTS.md — SINator Dashboard (2026-05-30, V15.2)
 
-## SINator-fireworksai V15.1 Integration
-- Backend: `http://localhost:8000` (226 Keys, Session Reuse, Use-Cases Fix)
+## SINator-fireworksai V15.2 Integration
+- Backend: `http://localhost:8000` (228 Keys)
 - Pool-Router: `http://localhost:9998` (10 Proxies :8888-:8897)
 - `/api/v1/config` → GMX/Fireworks Credentials
 - `/api/v1/pool/stats` → Pool Statistics
 - `/api/v1/pool/events` → SSE Live-Updates
-- `/api/v1/rotation/full` → E2E Rotation (~140s)
-- `/api/v1/browser/status` → Chrome/Profile Status
+- `/api/v1/rotation/full` → E2E Rotation (~140s) [wird nicht mehr direkt genutzt]
 
-## Get-Key-Hero: Holen vs Generieren
-- **Holen**: Least aus vorhandenem Pool (schnell, <1s). Wenn Pool leer → fällt auf Rotation zurück.
-- **Generieren**: Startet IMMER den Rotator (neuer GMX-Alias → Fireworks Account → API Key, ~140s)
+## Get-Key-Hero: Holen vs Generieren (V15.2)
+- **Holen**: Least aus vorhandenem Pool (schnell, <1s). Pool leer → Hinweis "Nutze Generieren"
+- **Generieren**: Öffnet **Terminal.app** via Tauri `invoke("open_terminal_rotate")` und führt `python3 tools/rotate.py` direkt aus. Key landet automatisch im Pool.
+- **open_terminal_rotate** (Rust): Holt Config vom Backend, baut Shell-Befehl, öffnet Terminal via `osascript`
 - **Max Keys**: 100 (über +/- Counter)
-- **Tastatur**: `R` = Holen/Generieren, `C` = Key kopieren
+- **Tastatur**: `R` = Holen, `C` = Key kopieren
 
 ## Quick Commands
 ```bash
