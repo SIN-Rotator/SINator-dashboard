@@ -113,4 +113,8 @@ Erst wenn der API eindeutig sagt "Account suspended" oder "unauthorized", wird d
 - TailwindCSS 4 + shadcn/ui
 - Tauri v2 (Rust + WebView, Clipboard + Chat Commands)
 - Rust: `reqwest`, `tokio`, `futures-util` für Chat-Proxy
-- Backend: FastAPI (Python), CDP/Browser-Automation
+- Backend: FastAPI (Python), CDP/Browser-Automation (V15.1)
+
+---
+
+*Stand: 2026-05-30 | V15.1 | SINator-fireworksai Pool: 226 Keys*
