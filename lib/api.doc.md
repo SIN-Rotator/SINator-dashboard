@@ -41,3 +41,4 @@ Dashboard API Client für SINator FastAPI Backends. TypeScript Interface + fetch
 - **`cache: "no-store"`** bei allen reads — verhindert stale Next.js Cache
 - **Provider-Parameter:** `backendUrl` + `apiPrefix` — Flexibel für HeyPiggy (:8002) und Fireworks (:8000)
 - **Kein Auth-Token:** API ist public für localhost
+- **Holen vs Generieren:** `startRotation()` triggert den Rotator (~140s). `pool-lease` least aus vorhandenem Pool (<1s). Dashboard zeigt beide Buttons.

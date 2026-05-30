@@ -1,13 +1,19 @@
 # AGENTS.md — SINator Dashboard (2026-05-30, V15.1)
 
 ## SINator-fireworksai V15.1 Integration
-- Backend: `http://localhost:8000` (225+ Keys, Session Reuse, Use-Cases Fix)
+- Backend: `http://localhost:8000` (226 Keys, Session Reuse, Use-Cases Fix)
 - Pool-Router: `http://localhost:9998` (10 Proxies :8888-:8897)
 - `/api/v1/config` → GMX/Fireworks Credentials
 - `/api/v1/pool/stats` → Pool Statistics
 - `/api/v1/pool/events` → SSE Live-Updates
 - `/api/v1/rotation/full` → E2E Rotation (~140s)
 - `/api/v1/browser/status` → Chrome/Profile Status
+
+## Get-Key-Hero: Holen vs Generieren
+- **Holen**: Least aus vorhandenem Pool (schnell, <1s). Wenn Pool leer → fällt auf Rotation zurück.
+- **Generieren**: Startet IMMER den Rotator (neuer GMX-Alias → Fireworks Account → API Key, ~140s)
+- **Max Keys**: 100 (über +/- Counter)
+- **Tastatur**: `R` = Holen/Generieren, `C` = Key kopieren
 
 ## Quick Commands
 ```bash
