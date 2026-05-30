@@ -24,6 +24,8 @@ import {
   Minus,
   Plus,
   HelpCircle,
+  Zap,
+  RotateCcw,
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
@@ -36,7 +38,7 @@ const ONBOARDING_KEY = "sinator.onboarding_seen"
 
 type Phase = "idle" | "running" | "success" | "error"
 
-const MAX_KEYS = 10
+const MAX_KEYS = 100
 
 interface Props {
   available: number
@@ -164,6 +166,20 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       } else {
         doLease()
       }
+      return
+    }
+    const stored = getStoredPassword()
+    if (!stored) {
+      setPwOpen(true)
+      return
+    }
+    runRotations(stored, count)
+  }
+
+  async function handleGenerate() {
+    dismissOnboarding()
+    if (!connected) {
+      toast.error("Backend nicht erreichbar")
       return
     }
     const stored = getStoredPassword()
@@ -598,6 +614,9 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
           <p className="text-base text-muted-foreground text-pretty max-w-lg">
             {provider.heroSubtitle}
           </p>
+          <p className="text-xs text-muted-foreground">
+            <strong>Holen</strong> = aus Pool leasen (schnell) · <strong>Generieren</strong> = Rotator starten (~140s/Key) · Bis zu 100 Stück
+          </p>
 
           {showOnboarding && (
             <div className="mt-2 text-xs text-muted-foreground bg-muted/40 border rounded-md px-3 py-2 max-w-md">
@@ -634,17 +653,31 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
             </div>
           </div>
 
-          <Button
-            size="lg"
-            onClick={handleClick}
-            disabled={!connected}
-            className="mt-2 h-14 px-8 text-base"
-          >
-            <Sparkles className="size-5" />
-            {count === 1
-              ? `${provider.itemNoun} holen`
-              : `${count} ${provider.itemNounPlural} holen`}
-          </Button>
+          <div className="mt-2 flex flex-col sm:flex-row gap-2">
+            <Button
+              size="lg"
+              onClick={handleClick}
+              disabled={!connected}
+              className="h-14 px-8 text-base"
+            >
+              <Sparkles className="size-5" />
+              {count === 1
+                ? `${provider.itemNoun} holen`
+                : `${count} ${provider.itemNounPlural} holen`}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleGenerate}
+              disabled={!connected}
+              className="h-14 px-8 text-base"
+            >
+              <Zap className="size-5 mr-2" />
+              {count === 1
+                ? `${provider.itemNoun} generieren`
+                : `${count} ${provider.itemNounPlural} generieren`}
+            </Button>
+          </div>
 
           {!connected && (
             <p className="text-xs text-destructive flex items-center gap-1.5 mt-2">

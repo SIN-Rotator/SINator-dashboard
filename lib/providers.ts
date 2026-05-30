@@ -105,7 +105,7 @@ console.log(resp.choices[0].message.content)`,
     },
     {
       q: "Kann ich mehrere Keys auf einmal holen?",
-      a: "Ja, bis zu 10 Stück über den +/- Counter. Sie werden nacheinander erstellt.",
+      a: "Ja, bis zu 100 Stück über den +/- Counter. \"Holen\" least aus dem Pool (schnell), \"Generieren\" startet den Rotator und erstellt frische Accounts (~140s pro Key).",
     },
     {
       q: "Wie benutze ich den Key?",
