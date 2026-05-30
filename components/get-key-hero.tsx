@@ -29,10 +29,11 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
-import { startRotation, revealKey, type RotationResult } from "@/lib/api"
+import { revealKey, type RotationResult } from "@/lib/api"
 import { addToHistory } from "@/lib/key-history"
 import { UsageSnippet } from "@/components/usage-snippet"
 import { useProvider } from "@/components/provider-context"
+import { invoke } from "@tauri-apps/api/core"
 
 const ONBOARDING_KEY = "sinator.onboarding_seen"
 
@@ -160,34 +161,27 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       })
       return
     }
-    if (available > 0) {
-      if (count > 1) {
-        doLeaseMulti(count)
-      } else {
-        doLease()
-      }
+    if (available <= 0) {
+      toast.error("Pool ist leer", {
+        description: "Nutze den \"Generieren\"-Button, um neue Keys zu erstellen.",
+      })
       return
     }
-    const stored = getStoredPassword()
-    if (!stored) {
-      setPwOpen(true)
-      return
+    if (count > 1) {
+      doLeaseMulti(count)
+    } else {
+      doLease()
     }
-    runRotations(stored, count)
   }
 
   async function handleGenerate() {
     dismissOnboarding()
-    if (!connected) {
-      toast.error("Backend nicht erreichbar")
-      return
-    }
     const stored = getStoredPassword()
     if (!stored) {
       setPwOpen(true)
       return
     }
-    runRotations(stored, count)
+    openTerminal(stored, count)
   }
 
   async function doLease() {
@@ -293,84 +287,24 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
     setPwOpen(false)
     const pw = pwInput
     setPwInput("")
-    runRotations(pw, count)
+    openTerminal(pw, count)
   }
 
-  async function runRotations(password: string, total: number) {
-    setPhase("running")
-    setProgressIdx(0)
-    setResult(null)
-    setErrMsg(null)
-    setCopied(false)
-    setCollectedKeys([])
-    setCurrentRun(1)
-    setStartedAt(Date.now())
-    setElapsed(0)
-    cancelRef.current = false
-
-    const collected: RotationResult[] = []
-    let lastError: string | null = null
-
-    for (let i = 0; i < total; i++) {
-      if (cancelRef.current) break
-      setCurrentRun(i + 1)
+  async function openTerminal(password: string, total: number) {
+    try {
+      const msg = await invoke("open_terminal_rotate", { password, count: total })
+      toast.success("Terminal geöffnet", {
+        description: `Rotation für ${total} ${total === 1 ? provider.itemNoun : provider.itemNounPlural} läuft im Terminal…`,
+      })
+      setPhase("running")
+      setStartedAt(Date.now())
+      setElapsed(0)
+      setCurrentRun(0)
       setProgressIdx(0)
-      const stepInterval = setInterval(() => {
-        setProgressIdx((idx) => (idx < PROGRESS_STEPS.length - 1 ? idx + 1 : idx))
-      }, 50_000)
-
-      try {
-        const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
-        clearInterval(stepInterval)
-        setProgressIdx(PROGRESS_STEPS.length - 1)
-
-        if (res.status === "success" && res.api_key) {
-          collected.push(res)
-          setCollectedKeys([...collected])
-          addToHistory({
-            api_key: res.api_key,
-            api_key_name: res.api_key_name,
-            alias_email: res.gmx_alias,
-            created_at: new Date().toISOString(),
-          })
-          onHistoryUpdate()
-        } else {
-          lastError = res.error ?? res.steps_failed?.join(", ") ?? "Erstellen fehlgeschlagen"
-          break
-        }
-      } catch (e) {
-        clearInterval(stepInterval)
-        const msg = (e as Error).message
-        lastError = friendlyError(msg)
-        if (/401|403|password|auth/i.test(msg)) {
-          if (typeof window !== "undefined") window.localStorage.removeItem(passwordKey)
-        }
-        break
-      }
-    }
-
-    if (collected.length > 0) {
-      const last = collected[collected.length - 1]
-      setResult(last)
-      setPhase("success")
-      try {
-        await navigator.clipboard.writeText(last.api_key!)
-        setCopied(true)
-        toast.success(
-          collected.length === 1
-            ? `${provider.itemNoun} in die Zwischenablage kopiert`
-            : `${collected.length} ${provider.itemNounPlural} erstellt — letzter wurde kopiert`,
-          { description: "Du kannst ihn jetzt einfügen (Strg+V)." },
-        )
-      } catch {
-        toast.success(`${provider.itemNoun} bereit`, {
-          description: "Klick auf Kopieren um ihn zu übernehmen.",
-        })
-      }
-      onDone()
-    } else {
-      setPhase("error")
-      setErrMsg(lastError ?? "Unbekannter Fehler")
+    } catch (e) {
+      toast.error("Terminal konnte nicht geöffnet werden", {
+        description: (e as Error).message,
+      })
     }
   }
 

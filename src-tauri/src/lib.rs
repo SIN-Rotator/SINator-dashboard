@@ -1,13 +1,23 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use std::process::Command;
 
 const PROXY_URL: &str = "http://localhost:9998/inference/v1/chat/completions";
 const MODEL: &str = "accounts/fireworks/models/gpt-oss-120b";
 const SYSTEM_PROMPT: &str = include_str!("../chat-system-prompt.txt");
+const ROTATE_PATH: &str = "/Users/jeremy/dev/SINator-fireworksai";
+const CDP_PORT: u16 = 9222;
 
 #[derive(Serialize)]
 struct ChatResponse {
     content: String,
     reasoning_ms: u64,
+}
+
+#[derive(Deserialize, Serialize)]
+struct ConfigResponse {
+    gmx_email: String,
+    gmx_password: String,
+    fireworks_password: String,
 }
 
 #[tauri::command]
@@ -98,11 +108,54 @@ async fn fetch_live_context() -> String {
     ctx
 }
 
+#[tauri::command]
+async fn open_terminal_rotate(password: String, count: u32) -> Result<String, String> {
+    let client = reqwest::Client::new();
+
+    let cfg: ConfigResponse = client
+        .get("http://localhost:8000/api/v1/config")
+        .send()
+        .await
+        .map_err(|e| format!("Backend nicht erreichbar: {}", e))?
+        .json()
+        .await
+        .map_err(|e| format!("Config-Fehler: {}", e))?;
+
+    let rotate_cmd = if count <= 1 {
+        format!(
+            "cd \"{}\" && python3 tools/rotate.py --gmx-email \"{}\" --gmx-password \"{}\" --password \"{}\" --cdp-port {}; echo; echo '--- Fertig. Drücke Enter zum Schließen ---'; read",
+            ROTATE_PATH, cfg.gmx_email, cfg.gmx_password, password, CDP_PORT
+        )
+    } else {
+        format!(
+            "cd \"{}\" && for i in $(seq 1 {}); do echo \\\"=== Rotation \\$i von {} ===\\\"; python3 tools/rotate.py --gmx-email \\\"{}\\\" --gmx-password \\\"{}\\\" --password \\\"{}\\\" --cdp-port {}; done; echo; echo '--- Alle {} fertig. Drücke Enter zum Schließen ---'; read",
+            ROTATE_PATH, count, count, cfg.gmx_email, cfg.gmx_password, password, CDP_PORT, count
+        )
+    };
+
+    let escaped = rotate_cmd
+        .replace("\\", "\\\\")
+        .replace("\"", "\\\"");
+
+    let script = format!(
+        "tell application \"Terminal\" to do script \"{}\"",
+        escaped
+    );
+
+    Command::new("osascript")
+        .arg("-e")
+        .arg(&script)
+        .spawn()
+        .map_err(|e| format!("Terminal konnte nicht geöffnet werden: {}", e))?;
+
+    Ok("Terminal geöffnet — Rotation läuft…".to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_clipboard_manager::init())
-        .invoke_handler(tauri::generate_handler![chat_send])
+        .invoke_handler(tauri::generate_handler![chat_send, open_terminal_rotate])
         .setup(|app| {
             if cfg!(debug_assertions) {
                 app.handle().plugin(
