@@ -210,4 +210,4 @@ for m in fail: print(f'  ❌ {m}')
 
 ---
 
-*Stand: 2026-05-29 | Tauri v2 | Next.js 16 | pnpm*
+*Stand: 2026-05-31 | Tauri v2 | Next.js 16 | pnpm*

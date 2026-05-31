@@ -23,7 +23,7 @@ Komponenten:
 - 10× Pool-Proxy (aiohttp, :8888-:8897): SSE-Dashboard, Key-Leasing, auto-swap bei 401/412, CORS
 - Landing Page (:8040): Statische Website mit Live-Pool-Stats
 - Tunnel (Cloudflare Named Tunnel): 1 Subdomain sinatorpool-router.delqhi.com → Pool-Router → 10 Proxys
-- Chrome (Profil 901, CDP Port 9222): Browser fuer GMX/Fireworks-Automation
+- Chrome (Profile 73, Port 9222): Browser fuer GMX/Fireworks-Automation (simoneschulze)
 - CUA-Driver: macOS Accessibility API fuer Klicks (nicht als Bot detektierbar!)
 - macOS Keychain: API-Keys verschluesselt gespeichert (com.sinator.pool)
 - LaunchAgents: com.sinator.backend, 10× com.sinator.pool-proxy, com.sinator.pool-router, com.sinator.tunnel, com.sinator.pages, com.sinator.chrome, com.sinator.cua-driver
@@ -66,7 +66,7 @@ accounts/fireworks/models/deepseek-v4-pro ($1.74/M)
 - Fireworks Account Suspension: $5 Credits pro Account aufgebraucht → suspended
 - GMX Captcha: Bei zu vielen Rotationen → 5-10 Min warten
 - GMX erlaubt nur 1 Alias gleichzeitig (wird automatisch rotiert)
-- Chrome MUSS mit Profil 901 starten (andernfalls Session tot)
+- Chrome MUSS mit Profile 73 (simoneschulze) starten (andernfalls Session tot)
 - pkill -9 Chrome VERBOTEN (zerstoert SQLite → Session tot)
 - waitForNavigation() bei GMX geht nicht (SPA)
 - CDP wird als Bot erkannt bei GMX → CUA-Driver als Alternative

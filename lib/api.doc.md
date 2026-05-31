@@ -15,7 +15,7 @@ Dashboard API Client für SINator FastAPI Backends. TypeScript Interface + fetch
 | Interface | Felder |
 |-----------|--------|
 | `PoolKey` | id, alias_email, key_name, created_at, used, suspended |
-| `PoolStats` | status, total, used, suspended, leased, available, keys |
+| `PoolStats` | status, total, used, suspended, available, keys |
 | `Health` | server, chrome, cua, version |
 | `BrowserStatus` | is_running, cdp_port, page_count |
 | `RotationResult` | status, gmx_alias, api_key, steps_completed, steps_failed |

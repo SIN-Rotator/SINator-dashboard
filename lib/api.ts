@@ -13,8 +13,6 @@ export interface PoolKey {
   used: boolean
   suspended?: boolean
   suspended_reason?: string
-  leased?: boolean
-  leased_to?: string
 }
 
 export interface PoolCredential {
@@ -32,7 +30,6 @@ export interface PoolStats {
   total: number
   used: number
   suspended: number
-  leased: number
   available: number
   keys: PoolKey[]
   credentials?: PoolCredential[]

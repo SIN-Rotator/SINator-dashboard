@@ -2,13 +2,6 @@
 
 ---
 
-## 1. Environment Variables
-
-| Variable | Standard | Beschreibung |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Backend-URL für Fireworks API |
-| `NEXT_PUBLIC_HEYPIGGY_URL` | `http://localhost:8002` | Backend-URL für HeyPiggy API |
-
 ---
 
 ## 2. Backend-Anbindung
@@ -37,7 +30,7 @@ Bei Remote-Betrieb die `NEXT_PUBLIC_API_URL` entsprechend setzen (z.B. `https://
 **Chat-Assistent Config:**
 - **Datei:** `src-tauri/chat-system-prompt.txt`
 - **Modell:** `accounts/fireworks/models/gpt-oss-120b` (via Pool-Router)
-- **Pool-Router URL:** `https://sinatorpool-router.delqhi.com/inference/v1` (hardcoded in `main.rs`)
+- **Pool-Router URL:** `https://sinatorpool-router.delqhi.com/inference/v1` (hardcoded in `lib.rs`)
 
 ---
 

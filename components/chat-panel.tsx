@@ -23,7 +23,7 @@ const SYSTEM_BASE = `Du bist der SINator-Hilfe-Assistent. Antworte IMMER auf Deu
 == SINATOR ARCHITEKTUR ==
 SINator ist ein automatisierter Fireworks AI API-Key-Generator. Er erstellt GMX-Email-Aliases, registriert Fireworks-Accounts, bestaetigt Email per OTP, generiert API-Keys. Pro Key: ~3 Min.
 
-Komponenten: Backend (:8000), Pool-Router (:9998), 10 Pool-Proxys (:8888-:8897), Landing Page (:8040), Tunnel (sinator.delqhi.com), Chrome (Profil 901, CDP 9222), CUA-Driver (macOS AX API), macOS Keychain, LaunchAgents.
+Komponenten: Backend (:8000), Pool-Router (:9998), 10 Pool-Proxys (:8888-:8897), Landing Page (:8040), Tunnel (sinator.delqhi.com), Chrome (Profile 73, simoneschulze), CUA-Driver (macOS AX API), macOS Keychain, LaunchAgents.
 
 == ROTATION FLOW ==
 1. GMX Login → 2. Alias-Rotation (delete+create) → 3. Fireworks Signup → 4. OTP via MailCheck Extension → 5. Verify → 6. Login → 7. Onboarding → 8. API Key → 9. Pool

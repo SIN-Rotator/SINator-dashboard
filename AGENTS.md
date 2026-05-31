@@ -1,14 +1,14 @@
-# AGENTS.md — SINator Dashboard (2026-05-30, V15.2)
+# AGENTS.md — SINator Dashboard (2026-05-31, V15.4)
 
-## SINator-fireworksai V15.2 Integration
-- Backend: `http://localhost:8000` (228 Keys)
+## SINator-fireworksai V15.4 Integration
+- Backend: `http://localhost:8000` (235 Keys)
 - Pool-Router: `http://localhost:9998` (10 Proxies :8888-:8897)
 - `/api/v1/config` → GMX/Fireworks Credentials
 - `/api/v1/pool/stats` → Pool Statistics
 - `/api/v1/pool/events` → SSE Live-Updates
 - `/api/v1/rotation/full` → E2E Rotation (~140s) [wird nicht mehr direkt genutzt]
 
-## Get-Key-Hero: Holen vs Generieren (V15.2)
+## Get-Key-Hero: Holen vs Generieren (V15.4)
 - **Holen**: Least aus vorhandenem Pool (schnell, <1s). Pool leer → Hinweis "Nutze Generieren"
 - **Generieren**: Öffnet **Terminal.app** via Tauri `invoke("open_terminal_rotate")` und führt `python3 tools/rotate.py` direkt aus. Key landet automatisch im Pool.
 - **open_terminal_rotate** (Rust): Holt Config vom Backend, baut Shell-Befehl, öffnet Terminal via `osascript`
