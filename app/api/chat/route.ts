@@ -29,7 +29,7 @@ Komponenten:
 - LaunchAgents: com.sinator.backend, 10× com.sinator.pool-proxy, com.sinator.pool-router, com.sinator.tunnel, com.sinator.pages, com.sinator.chrome, com.sinator.cua-driver
 
 == ROTATION FLOW (E2E) ==
-1. GMX Login (Playwright) → opensin@gmx.de → Cookies gespeichert
+1. GMX Login (Playwright) → Credentials aus Config → Cookies gespeichert
 2. GMX Session: IAC-Tab cleanup → www.gmx.net → "E-Mail" click → SID-Polling
 3. GMX Alias-Rotation: Playwright shadow DOM navigation → iframe delete + create (~41s)
 4. Fireworks Logout: CDP Network.deleteCookies (nur Fireworks-Domain!)

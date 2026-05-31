@@ -32,8 +32,7 @@ export default function SetupPage() {
         setGmxPassword(cfg.gmx_password)
         setFireworksPassword(cfg.fireworks_password)
       }).catch(() => {
-        setGmxEmail("opensin@gmx.de")
-        setFireworksPassword("ZOE.jerry2024!")
+        // Kein Passwort/Email-Fallback im Frontend!
       }),
       fetch(`${CONFIG_BACKEND}${CONFIG_PREFIX}/pool-lease?leased_to=setup&ttl_seconds=3600`, { cache: "no-store" })
         .then(r => r.json())
@@ -238,21 +237,78 @@ export default function SetupPage() {
         "deepseek-v4-pro": {
           "id": "fireworks/deepseek-v4-pro",
           "name": "DeepSeek V4 Pro",
-          "options": { "thinking": { "type": "enabled", "budgetTokens": 64000 } },
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 64000 }, "temperature": 0 },
+          "limit": { "context": 1048576, "output": 65536 }
+        },
+        "deepseek-v4-flash": {
+          "id": "accounts/fireworks/models/deepseek-v4-flash",
+          "name": "DeepSeek V4 Flash",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
           "limit": { "context": 1048576, "output": 65536 }
         },
         "glm-5p1": {
           "id": "fireworks/glm-5p1",
           "name": "GLM 5.1",
-          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 } },
-          "limit": { "context": 202752, "output": 32768 }
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 202752, "output": 65536 }
+        },
+        "glm-5p1-fast": {
+          "id": "accounts/fireworks/routers/glm-5p1-fast",
+          "name": "GLM 5.1 Fast",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 202752, "output": 65536 }
+        },
+        "kimi-k2p5": {
+          "id": "accounts/fireworks/models/kimi-k2p5",
+          "name": "Kimi K2.5",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 262144, "output": 65536 },
+          "modalities": { "input": ["text","image"], "output": ["text"] }
         },
         "kimi-k2p6": {
           "id": "fireworks/kimi-k2p6",
           "name": "Kimi K2.6",
-          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 } },
-          "limit": { "context": 262144, "output": 32768 },
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 262144, "output": 65536 },
           "modalities": { "input": ["text","image"], "output": ["text"] }
+        },
+        "kimi-k2p6-turbo": {
+          "id": "accounts/fireworks/routers/kimi-k2p6-turbo",
+          "name": "Kimi K2.6 Turbo",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 262144, "output": 65536 },
+          "modalities": { "input": ["text","image"], "output": ["text"] }
+        },
+        "qwen3p6-plus": {
+          "id": "accounts/fireworks/models/qwen3p6-plus",
+          "name": "Qwen 3.6 Plus",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 131072, "output": 65536 },
+          "modalities": { "input": ["text","image"], "output": ["text"] }
+        },
+        "minimax-m2p5": {
+          "id": "accounts/fireworks/models/minimax-m2p5",
+          "name": "MiniMax M2.5",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 196608, "output": 65536 }
+        },
+        "minimax-m2p7": {
+          "id": "fireworks/minimax-m2p7",
+          "name": "MiniMax M2.7",
+          "options": { "thinking": { "type": "enabled", "budgetTokens": 32000 }, "temperature": 0 },
+          "limit": { "context": 196608, "output": 65536 }
+        },
+        "gpt-oss-120b": {
+          "id": "accounts/fireworks/models/gpt-oss-120b",
+          "name": "GPT-OSS 120B",
+          "options": { "temperature": 0 },
+          "limit": { "context": 131072, "output": 65536 }
+        },
+        "gpt-oss-20b": {
+          "id": "accounts/fireworks/models/gpt-oss-20b",
+          "name": "GPT-OSS 20B",
+          "options": { "temperature": 0 },
+          "limit": { "context": 131072, "output": 65536 }
         }
       }
     }
