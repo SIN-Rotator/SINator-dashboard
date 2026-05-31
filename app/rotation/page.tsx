@@ -8,7 +8,7 @@ import { LiveLog } from "@/components/live-log"
 import { useSinator } from "@/hooks/use-sinator"
 
 export default function RotationPage() {
-  const { health, browser, stats, connected, refresh } = useSinator()
+  const { health, stats, connected, refresh } = useSinator()
   const [logs, setLogs] = React.useState<LogEntry[]>([])
 
   function addLog(e: LogEntry) {
@@ -31,7 +31,7 @@ export default function RotationPage() {
           <LiveLog entries={logs} onClear={() => setLogs([])} />
         </div>
       </main>
-      <StatusBar health={health} browser={browser} stats={stats} connected={connected} />
+      <StatusBar health={health} stats={stats} connected={connected} />
     </div>
   )
 }

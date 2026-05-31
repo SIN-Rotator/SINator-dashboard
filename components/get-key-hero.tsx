@@ -195,7 +195,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
     setStartedAt(startedAt)
     setElapsed(0)
     try {
-      const leaseRes = await fetch(`${provider.backendUrl}${provider.apiPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, {
+      const leaseRes = await fetch(`${provider.backendUrl}${provider.poolPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, {
         cache: "no-store",
       })
       if (!leaseRes.ok) throw new Error("Lease fehlgeschlagen")
@@ -244,7 +244,7 @@ export function GetKeyHero({ available, connected, onDone, onHistoryUpdate }: Pr
       if (cancelRef.current) break
       setCurrentRun(i + 1)
       try {
-        const leaseRes = await fetch(`${provider.backendUrl}${provider.apiPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, { cache: "no-store" })
+        const leaseRes = await fetch(`${provider.backendUrl}${provider.poolPrefix}/pool-lease?leased_to=dashboard-${startedAt}`, { cache: "no-store" })
         if (!leaseRes.ok) throw new Error("Lease fehlgeschlagen")
         const leaseData = await leaseRes.json() as { api_key: string; alias_email: string; key_name: string; key_id: string }
         const took = Math.floor((Date.now() - startedAt) / 1000)

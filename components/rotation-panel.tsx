@@ -80,7 +80,7 @@ export function RotationPanel({ onLog, onRotationDone }: Props) {
     const startTs = new Date().toLocaleTimeString()
     onLog({ ts: startTs, message: "Starting rotation pipeline…", status: "info" })
     try {
-      const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
+      const res = await startRotation(provider.backendUrl, provider.poolPrefix, password)
       const endTs = new Date().toLocaleTimeString()
       const completed = res.steps_completed ?? []
       const failed = res.steps_failed ?? []
@@ -129,7 +129,7 @@ export function RotationPanel({ onLog, onRotationDone }: Props) {
       // Check target if applicable. Target check happens before each run.
       if (loopMode === "target") {
         try {
-          const r = await fetch(`${provider.apiPrefix}/pool/stats`, { cache: "no-store" })
+          const r = await fetch(`${provider.poolPrefix}/pool/stats`, { cache: "no-store" })
           const s = await r.json()
           if ((s.total ?? 0) >= targetCount) {
             onLog({

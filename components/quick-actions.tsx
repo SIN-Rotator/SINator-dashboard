@@ -40,7 +40,7 @@ export function QuickActions({ onRefresh, onRotationDone, refreshing }: Props) {
       description: "GMX → Fireworks → Key (~200s)",
     })
     try {
-      const res = await startRotation(provider.backendUrl, provider.apiPrefix, password)
+      const res = await startRotation(provider.backendUrl, provider.poolPrefix, password)
       if (res.status === "success") {
         toast.success("Rotation complete", {
           id,

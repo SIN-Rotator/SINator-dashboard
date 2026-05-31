@@ -17,7 +17,6 @@ Dashboard API Client für SINator FastAPI Backends. TypeScript Interface + fetch
 | `PoolKey` | id, alias_email, key_name, created_at, used, suspended |
 | `PoolStats` | status, total, used, suspended, available, keys |
 | `Health` | server, chrome, cua, version |
-| `BrowserStatus` | is_running, cdp_port, page_count |
 | `RotationResult` | status, gmx_alias, api_key, steps_completed, steps_failed |
 | `ConfigData` | gmx_email, gmx_password, fireworks_password |
 
@@ -39,6 +38,8 @@ Dashboard API Client für SINator FastAPI Backends. TypeScript Interface + fetch
 
 - **Default Backend:** `http://localhost:8000` — Fireworks Backend
 - **`cache: "no-store"`** bei allen reads — verhindert stale Next.js Cache
-- **Provider-Parameter:** `backendUrl` + `apiPrefix` — Flexibel für HeyPiggy (:8002) und Fireworks (:8000)
+- **Provider-Parameter:** `backendUrl` + `poolPrefix` — Flexibel für HeyPiggy (:8002) und Fireworks (:8000)
+- `apiPrefix` für provider-spezifische Routes (GMX: `/api/v1/gmx`), `poolPrefix` für shared Pool/Lease/Stats (`/api/v1`)
 - **Kein Auth-Token:** API ist public für localhost
+- **getBrowserStatus() entfernt** — Route `/api/v1/browser/status` wurde in Backend V15.4 gelöscht
 - **Holen vs Generieren:** `startRotation()` triggert den Rotator (~140s). `pool-lease` least aus vorhandenem Pool (<1s). Dashboard zeigt beide Buttons.

@@ -24,9 +24,10 @@ export interface ProviderConfig {
   // Theming hint (Tailwind class snippet)
   accent: string
   // Backend
-  backendUrl: string  // z.B. "http://localhost:8000"
-  apiPrefix: string   // z.B. "/api/v1"
-  available: boolean  // false = "Coming soon"
+  backendUrl: string     // z.B. "http://localhost:8000"
+  apiPrefix: string      // z.B. "/api/v1/gmx" — provider-specific routes
+  poolPrefix: string     // z.B. "/api/v1" — shared pool/lease/stats routes
+  available: boolean     // false = "Coming soon"
   // Begriffe pro Provider
   itemNoun: string       // "API Key", "Account", "Alias"
   itemNounPlural: string // "API Keys", "Accounts", "Aliase"
@@ -54,6 +55,7 @@ const FIREWORKS: ProviderConfig = {
   accent: "text-orange-500",
   backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1",
+  poolPrefix: "/api/v1",
   available: true,
   itemNoun: "API Key",
   itemNounPlural: "API Keys",
@@ -137,7 +139,8 @@ const GITHUB: ProviderConfig = {
   accent: "text-foreground",
   backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/github",
-  available: true,
+  poolPrefix: "/api/v1",
+  available: false,
   itemNoun: "Account",
   itemNounPlural: "GitHub Accounts",
   passwordLabel: "Master-Passwort",
@@ -183,7 +186,8 @@ const VERCEL: ProviderConfig = {
   accent: "text-foreground",
   backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/vercel",
-  available: true,
+  poolPrefix: "/api/v1",
+  available: false,
   itemNoun: "API Token",
   itemNounPlural: "Vercel/v0 Tokens",
   passwordLabel: "Master-Passwort",
@@ -233,6 +237,7 @@ const GMX: ProviderConfig = {
   accent: "text-blue-500",
   backendUrl: "http://localhost:8000",
   apiPrefix: "/api/v1/gmx",
+  poolPrefix: "/api/v1",
   available: true,
   itemNoun: "Alias",
   itemNounPlural: "GMX Aliase",
@@ -279,7 +284,9 @@ const HEYPIGGY: ProviderConfig = {
   accent: "text-pink-500",
   backendUrl: "http://localhost:8002",
   apiPrefix: "/api/v1",
+  poolPrefix: "/api/v1",
   available: true,
+
   itemNoun: "Account",
   itemNounPlural: "HeyPiggy Accounts",
   passwordLabel: "Master-Passwort",

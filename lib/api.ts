@@ -43,12 +43,6 @@ export interface Health {
   version?: string
 }
 
-export interface BrowserStatus {
-  is_running: boolean
-  cdp_port: number
-  page_count: number
-}
-
 export interface RotationResult {
   status: string
   gmx_alias?: string
@@ -77,11 +71,6 @@ const DEFAULT_BACKEND = "http://localhost:8000"
 export async function getHealth(backendUrl?: string): Promise<Health> {
   const r = await fetch(apiUrl(backendUrl || DEFAULT_BACKEND, "/health"), { cache: "no-store" })
   return handleJson<Health>(r)
-}
-
-export async function getBrowserStatus(): Promise<BrowserStatus> {
-  const r = await fetch(apiUrl(DEFAULT_BACKEND, "/api/v1/browser/status"), { cache: "no-store" })
-  return handleJson<BrowserStatus>(r)
 }
 
 export async function getPoolStats(backendUrl: string, apiPrefix: string): Promise<PoolStats> {

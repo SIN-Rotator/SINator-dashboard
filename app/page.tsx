@@ -18,7 +18,7 @@ import { Card } from "@/components/ui/card"
 import { ChevronDown, Settings2, KeyRound, RefreshCw } from "lucide-react"
 
 export default function DashboardPage() {
-  const { health, browser, stats, connected, refresh } = useSinator()
+  const { health, stats, connected, refresh } = useSinator()
   const [advancedOpen, setAdvancedOpen] = React.useState(false)
   const [refreshing, setRefreshing] = React.useState(false)
   const [historyTick, setHistoryTick] = React.useState(0)
@@ -114,7 +114,7 @@ export default function DashboardPage() {
           </CollapsibleContent>
         </Collapsible>
       </main>
-      <StatusBar health={health} browser={browser} stats={stats} connected={connected} />
+      <StatusBar health={health} stats={stats} connected={connected} />
     </div>
   )
 }

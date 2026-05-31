@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import type { BrowserStatus, Health, PoolStats } from "@/lib/api"
+import type { Health, PoolStats } from "@/lib/api"
 import { ChevronUp, ChevronDown, Copy, Check } from "lucide-react"
 import { toast } from "sonner"
 
 interface Props {
   health: Health | null
-  browser: BrowserStatus | null
   stats: PoolStats | null
   connected: boolean
 }
@@ -24,7 +23,7 @@ function Dot({ ok }: { ok: boolean }) {
 
 const START_CMD = "python agent_toolbox/start_toolbox.py"
 
-export function StatusBar({ health, browser, stats, connected }: Props) {
+export function StatusBar({ health, stats, connected }: Props) {
   const [expanded, setExpanded] = React.useState(false)
   const [copied, setCopied] = React.useState(false)
 
@@ -75,8 +74,7 @@ export function StatusBar({ health, browser, stats, connected }: Props) {
     )
   }
 
-  const allOk =
-    !!browser?.is_running && !!health?.cua && health?.server === "ok" && (stats?.total ?? 0) >= 0
+  const allOk = health?.server === "ok" && (stats?.total ?? 0) >= 0
 
   return (
     <div className="fixed bottom-0 inset-x-0 border-t bg-card/95 backdrop-blur-sm z-50">
@@ -98,16 +96,11 @@ export function StatusBar({ health, browser, stats, connected }: Props) {
         </button>
 
         {expanded && (
-          <div className="mt-3 pt-3 border-t grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+          <div className="mt-3 pt-3 border-t grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-mono">
             <div className="flex items-center gap-2">
-              <Dot ok={!!browser?.is_running} />
+              <Dot ok />
               <span className="text-muted-foreground">Chrome:</span>
-              <span>{browser?.is_running ? `läuft` : "aus"}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Dot ok={!!health?.cua} />
-              <span className="text-muted-foreground">CUA:</span>
-              <span>{health?.cua ? "aktiv" : "inaktiv"}</span>
+              <span>Playwright V15.4</span>
             </div>
             <div className="flex items-center gap-2">
               <Dot ok={health?.server === "ok"} />
