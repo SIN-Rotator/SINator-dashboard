@@ -1,6 +1,13 @@
 # SINator Dashboard — Konfiguration
 
----
+## 1. Environment Variables
+
+Datei `.env.local` erstellen (siehe `.env.example`):
+
+| Variable | Default | Beschreibung |
+|----------|---------|-------------|
+| `SINATOR_BACKEND_URL` | `http://localhost:8000` | Backend-URL für Fireworks API |
+| `FIREWORKS_MODEL` | `accounts/fireworks/models/gpt-oss-120b` | Chat-Modell via Pool-Router |
 
 ---
 
@@ -13,7 +20,7 @@ Das Dashboard erwartet laufende Backends:
 | SINator-fireworksai | `http://localhost:8000` | `:8000` |
 | SINator-heypiggy | `http://localhost:8002` | `:8002` |
 
-Bei Remote-Betrieb die `NEXT_PUBLIC_API_URL` entsprechend setzen (z.B. `https://sinator.delqhi.com`).
+Bei Remote-Betrieb `SINATOR_BACKEND_URL` setzen (z.B. `https://sinator.delqhi.com`).
 
 ---
 
@@ -25,7 +32,6 @@ Bei Remote-Betrieb die `NEXT_PUBLIC_API_URL` entsprechend setzen (z.B. `https://
 |---------|----------|-------------|
 | `app.window.title` | `SINator` | Fenstertitel |
 | `app.security.csp` | `default-src 'self'` | Content Security Policy |
-| `app.security.allowlist` | — | Erlaubte Protokolle (z.B. `clipboard:read`, `clipboard:write`) |
 
 **Chat-Assistent Config:**
 - **Datei:** `src-tauri/chat-system-prompt.txt`
@@ -72,4 +78,4 @@ Für CLI/OpenCode Integration die Pool-Router URL in `~/.config/opencode/opencod
 
 ---
 
-*Stand: 2026-05-30 | Tauri v2 | Next.js 16*
+*Stand: 2026-05-31 | Tauri v2 | Next.js 16*
