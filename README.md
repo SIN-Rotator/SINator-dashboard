@@ -72,9 +72,7 @@ Keine einzelnen Pool-URLs mehr. Bei 413/429/412/5xx springt der Router automatis
 
 ## OpenCode Config
 
-Öffne `~/.config/opencode/opencode.json` und ergänze den `provider.fireworks-ai` Abschnitt mit der Pool-Router Base-URL:
-
-![OpenCode Config Pfad](docs/images/opencode-config-path.png)
+In `~/.config/opencode/opencode.json` den `provider.fireworks-ai` Abschnitt ergänzen:
 
 ```json
 {
