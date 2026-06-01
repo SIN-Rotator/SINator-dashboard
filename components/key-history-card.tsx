@@ -38,7 +38,8 @@ export function KeyHistoryCard({ refreshKey }: Props) {
     toast.success("Verlauf gelöscht")
   }
 
-  function relTime(iso: string): string {
+  function relTime(iso?: string): string {
+    if (!iso) return "unbekannt"
     const diff = Date.now() - new Date(iso).getTime()
     const mins = Math.floor(diff / 60_000)
     if (mins < 1) return "gerade eben"
@@ -47,6 +48,11 @@ export function KeyHistoryCard({ refreshKey }: Props) {
     if (hrs < 24) return `vor ${hrs} Std.`
     const days = Math.floor(hrs / 24)
     return `vor ${days} Tag${days === 1 ? "" : "en"}`
+  }
+
+  // Helper um Key zu extrahieren (api_key oder apiKey)
+  function getKey(entry: HistoryEntry): string {
+    return entry.api_key ?? entry.apiKey ?? ""
   }
 
   return (
@@ -62,28 +68,32 @@ export function KeyHistoryCard({ refreshKey }: Props) {
         </Button>
       </div>
       <ul className="space-y-2">
-        {items.map((entry, idx) => (
-          <li
-            key={entry.api_key}
-            className="flex items-center justify-between gap-3 px-3 py-2 rounded-md border bg-background/50"
-          >
-            <div className="flex-1 min-w-0">
-              <code className="text-xs font-mono">{maskKey(entry.api_key)}</code>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {relTime(entry.created_at)}
-                {entry.api_key_name && ` · ${entry.api_key_name}`}
-              </p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => copy(entry.api_key, idx)}
-              className="h-8 shrink-0"
+        {items.map((entry, idx) => {
+          const key = getKey(entry)
+          return (
+            <li
+              key={key || idx}
+              className="flex items-center justify-between gap-3 px-3 py-2 rounded-md border bg-background/50"
             >
-              {copiedIdx === idx ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-            </Button>
-          </li>
-        ))}
+              <div className="flex-1 min-w-0">
+                <code className="text-xs font-mono">{maskKey(key)}</code>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {relTime(entry.created_at)}
+                  {(entry.api_key_name || entry.keyName) && ` · ${entry.api_key_name || entry.keyName}`}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => key && copy(key, idx)}
+                disabled={!key}
+                className="h-8 shrink-0"
+              >
+                {copiedIdx === idx ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+              </Button>
+            </li>
+          )
+        })}
       </ul>
       <p className="text-xs text-muted-foreground mt-3">
         Nur lokal in deinem Browser gespeichert.

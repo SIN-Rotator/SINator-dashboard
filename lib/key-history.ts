@@ -5,10 +5,15 @@ const HISTORY_KEY = "sinator.key_history"
 const MAX_HISTORY = 5
 
 export interface HistoryEntry {
-  api_key: string
+  api_key?: string
   api_key_name?: string
   alias_email?: string
-  created_at: string // ISO
+  created_at?: string // ISO
+  id?: string
+  alias?: string
+  keyName?: string
+  status?: string
+  apiKey?: string
 }
 
 export function loadHistory(): HistoryEntry[] {
@@ -26,7 +31,8 @@ export function loadHistory(): HistoryEntry[] {
 export function addToHistory(entry: HistoryEntry) {
   if (typeof window === "undefined") return
   const current = loadHistory()
-  const next = [entry, ...current.filter((e) => e.api_key !== entry.api_key)].slice(0, MAX_HISTORY)
+  const key = entry.api_key ?? entry.apiKey
+  const next = [entry, ...current.filter((e) => (e.api_key ?? e.apiKey) !== key)].slice(0, MAX_HISTORY)
   window.localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
 }
 

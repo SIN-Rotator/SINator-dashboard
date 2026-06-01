@@ -34,8 +34,13 @@ export function UsageSnippet({ apiKey }: Props) {
   const filled = (s?: string) => (s ? s.replaceAll("{KEY}", apiKey) : "")
 
   async function copy() {
+    const snippetContent = snippets?.[tab]
+    if (!snippetContent) {
+      toast.error("Kein Code zum Kopieren")
+      return
+    }
     try {
-      await navigator.clipboard.writeText(filled(snippets[tab]))
+      await navigator.clipboard.writeText(filled(snippetContent))
       setCopied(true)
       toast.success("Code kopiert")
       setTimeout(() => setCopied(false), 2000)
