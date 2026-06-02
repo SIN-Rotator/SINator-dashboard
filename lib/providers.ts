@@ -181,50 +181,94 @@ const VERCEL: ProviderConfig = {
   id: "vercel",
   label: "Vercel + v0",
   shortLabel: "Vercel",
-  description: "Vercel & v0.app API Tokens",
+  description: "Vercel AI Gateway API Keys mit Auto-Failover",
   icon: Triangle,
   accent: "text-foreground",
-  backendUrl: "http://localhost:8000",
+  backendUrl: "http://localhost:8001",  // SINator-VercelPool Backend
   apiPrefix: "/api/v1/vercel",
-  poolPrefix: "/api/v1",
-  available: false,
-  itemNoun: "API Token",
-  itemNounPlural: "Vercel/v0 Tokens",
-  passwordLabel: "Master-Passwort",
-  heroTitle: "Vercel Token holen",
-  heroSubtitle: "Account + v0 Premium-Trial + API Token automatisch",
-  successTitle: "Dein neuer Vercel Token",
+  poolPrefix: "/pool",
+  available: true,
+  itemNoun: "AI Gateway Key",
+  itemNounPlural: "AI Gateway Keys",
+  passwordLabel: "AI Gateway API Key",
+  heroTitle: "AI Gateway Key holen",
+  heroSubtitle: "Auto-Failover Pool mit 31-Tage-Cooldown-Rotation",
+  successTitle: "Dein AI Gateway Key",
   snippets: {
-    curl: `curl https://api.vercel.com/v2/user \\
-  -H "Authorization: Bearer {KEY}"`,
-    node: `const res = await fetch("https://api.vercel.com/v2/user", {
-  headers: { Authorization: "Bearer {KEY}" },
+    curl: `# Über SINator-VercelPool (Auto-Failover)
+curl http://localhost:8001/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "openai/gpt-4o-mini",
+    "messages": [{"role":"user","content":"Hallo!"}]
+  }'`,
+    python: `from openai import OpenAI
+
+# Über SINator-VercelPool (Auto-Failover)
+client = OpenAI(
+    base_url="http://localhost:8001/v1",
+    api_key="pool",  # beliebig, Pool wählt Key automatisch
+)
+
+resp = client.chat.completions.create(
+    model="openai/gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hallo!"}],
+)
+print(resp.choices[0].message.content)`,
+    node: `import OpenAI from "openai"
+
+// Über SINator-VercelPool (Auto-Failover)
+const client = new OpenAI({
+  baseURL: "http://localhost:8001/v1",
+  apiKey: "pool",  // beliebig, Pool wählt Key automatisch
 })
-console.log(await res.json())`,
+
+const resp = await client.chat.completions.create({
+  model: "openai/gpt-4o-mini",
+  messages: [{ role: "user", content: "Hallo!" }],
+})
+console.log(resp.choices[0].message.content)`,
   },
   faq: [
     {
-      q: "Was macht der Vercel-Rotator?",
-      a: "Er erstellt einen Vercel-Account über GMX-Email-Alias, aktiviert ggf. den v0 Premium-Trial und generiert einen API Token. Token wird im Pool gespeichert.",
+      q: "Was ist SINator-VercelPool?",
+      a: "Ein intelligenter Key-Pool für Vercel AI Gateway. Er verwaltet mehrere API-Keys und wechselt automatisch bei Rate-Limits (402/429) oder Sperrungen (403) zum nächsten Key.",
     },
     {
-      q: "Welche Scopes hat der Token?",
-      a: "Standard: voller User-Scope (eigene Projekte, Deployments, v0). Team-Tokens müssen separat erstellt werden.",
+      q: "Was ist die 31-Tage-Rotation?",
+      a: "Keys werden nie gelöscht. Bei einem Fehler geht der Key für 31 Tage in Cooldown und wird danach automatisch wieder aktiviert. So gehen keine Keys verloren.",
     },
     {
-      q: "Wie nutze ich den Token mit v0?",
-      a: "v0 nutzt unter der Haube die Vercel-API. Setze ihn als `VERCEL_TOKEN` env oder im v0 CLI mit `v0 login --token {KEY}`.",
+      q: "Welche Modelle werden unterstützt?",
+      a: "Alle Vercel AI Gateway Modelle: OpenAI (gpt-4o, gpt-4o-mini), Anthropic (claude-opus-4, claude-sonnet-4), Google (gemini-2.5-pro), und mehr.",
     },
     {
-      q: "Wie lange ist der Token gültig?",
-      a: "Standard: unbegrenzt bis du ihn widerrufst. v0 Premium-Trial läuft je nach Aktion zwischen 14–30 Tagen.",
+      q: "Wie füge ich neue Keys hinzu?",
+      a: "Über den Pool-Manager: `python add_keys.py --keys KEY1 KEY2` oder per API: POST /pool/keys mit JSON-Body.",
+    },
+    {
+      q: "Was passiert bei 'Pool erschöpft'?",
+      a: "Alle Keys sind im Cooldown. Entweder neue Keys hinzufügen oder warten bis Keys aus dem Cooldown kommen.",
+    },
+    {
+      q: "Brauche ich einen API-Key für den Pool?",
+      a: "Nein, der Pool selbst ist unauthentifiziert (localhost). Er wählt automatisch einen aktiven Key aus dem Pool für jede Anfrage.",
     },
   ],
-  chatSystemPrompt: `Du bist der Hilfe-Assistent für den SINator Vercel-/v0-Rotator. Antworte freundlich und kurz auf Deutsch, einfach genug für 12-Jährige. Der Rotator erstellt Vercel-Accounts (mit v0 Premium-Trial) und generiert API Tokens. Verwendung gegen https://api.vercel.com mit Bearer-Auth.`,
+  chatSystemPrompt: `Du bist der Hilfe-Assistent für SINator-VercelPool. Antworte freundlich und kurz auf Deutsch, einfach genug für 12-Jährige. 
+
+SINator-VercelPool ist ein Key-Pool-Router für Vercel AI Gateway:
+- Verwaltet mehrere AI_GATEWAY_API_KEYs in einer SQLite-Datenbank
+- Wählt automatisch den ältesten ungenutzten Key (LRU)
+- Bei 402/429/403 Fehlern: automatischer Retry mit nächstem Key
+- 31-Tage-Cooldown: Keys werden nie gelöscht, nur pausiert
+- Unterstützt alle Vercel AI Gateway Modelle (OpenAI, Anthropic, Google, etc.)
+
+Nutzung: Einfach gegen localhost:8001/v1 anfragen, Pool übernimmt Key-Management.`,
   quickFacts: [
-    { label: "~3 Min", desc: "pro Token" },
-    { label: "v0 Premium", desc: "Trial inklusive" },
-    { label: "Voller Scope", desc: "User-Level" },
+    { label: "Auto-Failover", desc: "bei Rate-Limits" },
+    { label: "31 Tage", desc: "Cooldown-Rotation" },
+    { label: "LRU", desc: "Key-Auswahl" },
   ],
 }
 

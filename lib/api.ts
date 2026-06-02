@@ -131,6 +131,69 @@ export interface ConfigData {
   fireworks_password: string
 }
 
+// === Vercel Pool API (SINator-VercelPool specific) ===
+
+export interface VercelPoolKey {
+  key: string
+  added_at: string
+  last_used: string | null
+  cooldown_until: string | null
+  use_count: number
+  error_count: number
+  status: "active" | "cooldown" | "exhausted"
+}
+
+export interface VercelPoolStats {
+  total_keys: number
+  active_keys: number
+  cooldown_keys: number
+  total_requests: number
+  successful_requests: number
+  failed_requests: number
+  keys: VercelPoolKey[]
+}
+
+export interface VercelPoolHealth {
+  status: string
+  pool_size: number
+  active_keys: number
+  cooldown_keys: number
+  uptime_seconds: number
+}
+
+export async function getVercelPoolHealth(backendUrl: string): Promise<VercelPoolHealth> {
+  const r = await fetch(apiUrl(backendUrl, "/health"), { cache: "no-store" })
+  return handleJson<VercelPoolHealth>(r)
+}
+
+export async function getVercelPoolStats(backendUrl: string): Promise<VercelPoolStats> {
+  const r = await fetch(apiUrl(backendUrl, "/pool/stats"), { cache: "no-store" })
+  return handleJson<VercelPoolStats>(r)
+}
+
+export async function addVercelPoolKeys(backendUrl: string, keys: string[]): Promise<{ status: string; added: number }> {
+  const r = await fetch(apiUrl(backendUrl, "/pool/keys"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ keys }),
+  })
+  return handleJson(r)
+}
+
+export async function removeVercelPoolKey(backendUrl: string, keyPrefix: string): Promise<{ status: string }> {
+  const r = await fetch(apiUrl(backendUrl, `/pool/keys/${encodeURIComponent(keyPrefix)}`), {
+    method: "DELETE",
+  })
+  return handleJson(r)
+}
+
+export async function resetVercelPoolKey(backendUrl: string, keyPrefix: string): Promise<{ status: string }> {
+  const r = await fetch(apiUrl(backendUrl, `/pool/keys/${encodeURIComponent(keyPrefix)}/reset`), {
+    method: "POST",
+  })
+  return handleJson(r)
+}
+
 export async function getConfig(apiPrefix: string, backendUrl?: string): Promise<ConfigData> {
   const r = await fetch(apiUrl(backendUrl || DEFAULT_BACKEND, `${apiPrefix}/config`), { cache: "no-store" })
   return handleJson(r) as Promise<ConfigData>
