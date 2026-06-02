@@ -33,8 +33,11 @@ export default function DashboardPage() {
   }
 
   const total = stats?.total ?? 0
-  const available = stats?.available ?? 0
+  const backendAvailable = stats?.available ?? 0
   const dead = (stats?.used ?? 0) + (stats?.suspended ?? 0)
+  // Treat proxy-leased keys as available — they're held by the proxy for instant
+  // chat access, not actually exhausted. Backend's `available` excludes leased.
+  const available = backendAvailable + (stats?.leased ?? 0)
 
   return (
     <div className="min-h-screen pb-24">

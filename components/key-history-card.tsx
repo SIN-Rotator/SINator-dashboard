@@ -40,7 +40,9 @@ export function KeyHistoryCard({ refreshKey }: Props) {
 
   function relTime(iso?: string): string {
     if (!iso) return "unbekannt"
-    const diff = Date.now() - new Date(iso).getTime()
+    const t = new Date(iso).getTime()
+    if (!Number.isFinite(t)) return "unbekannt"
+    const diff = Date.now() - t
     const mins = Math.floor(diff / 60_000)
     if (mins < 1) return "gerade eben"
     if (mins < 60) return `vor ${mins} Min.`
