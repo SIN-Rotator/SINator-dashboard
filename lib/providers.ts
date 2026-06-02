@@ -1,4 +1,5 @@
 // Provider-Registry: zentrale Konfiguration für alle Rotator-Typen
+// Docs: docs/PROVIDER_API_CONVENTION.md — JEDER neue Provider MUSS diese API erfüllen
 import type { ComponentType } from "react"
 import { Flame, Github, Triangle, Mail, PiggyBank } from "lucide-react"
 
@@ -15,6 +16,22 @@ export interface FaqItem {
   a: string
 }
 
+/**
+ * Provider-Capabilities: Welche Operationen unterstützt dieser Provider?
+ * Wird vom Provider-Adapter (lib/adapters.ts) genutzt um UI-Operationen
+ * auf die richtigen Backend-Endpoints zu mappen.
+ */
+export interface ProviderCapabilities {
+  /** Unterstützt /pool/stats, /pool/lease, /pool/return */
+  hasPool: boolean
+  /** Unterstützt /rotation/full (Sub-Process basierte Rotation) */
+  hasRotation: boolean
+  /** Benötigt Tauri-Terminal (Browser-basierte Rotatoren wie Fireworks/HeyPiggy) */
+  hasTerminalRotation: boolean
+  /** Pool-Items sind API-Keys (sonst: Email+Passwort Credentials) */
+  hasApiKeys: boolean
+}
+
 export interface ProviderConfig {
   id: ProviderId
   label: string
@@ -23,11 +40,16 @@ export interface ProviderConfig {
   icon: ComponentType<{ className?: string }>
   // Theming hint (Tailwind class snippet)
   accent: string
-  // Backend
-  backendUrl: string     // z.B. "http://localhost:8000"
-  apiPrefix: string      // z.B. "/api/v1/gmx" — provider-specific routes
+  // ── Backend (siehe docs/PROVIDER_API_CONVENTION.md für Port-Konvention) ──
+  // ⚠️ backendUrl MUSS eindeutig sein pro Provider! 81xx Range = offizielle
+  // Rotator-Ports. Niemals 8000/8001/8002 für neue Provider — kollidiert mit
+  // bestehenden Services und wird von launchd gekillt.
+  backendUrl: string     // z.B. "http://localhost:8101"
+  apiPrefix: string      // z.B. "/api/v1" — provider-specific routes
   poolPrefix: string     // z.B. "/api/v1" — shared pool/lease/stats routes
   available: boolean     // false = "Coming soon"
+  // ── Capabilities (vom Adapter genutzt) ──
+  capabilities: ProviderCapabilities
   // Begriffe pro Provider
   itemNoun: string       // "API Key", "Account", "Alias"
   itemNounPlural: string // "API Keys", "Accounts", "Aliase"
@@ -53,10 +75,16 @@ const FIREWORKS: ProviderConfig = {
   description: "API Keys für Fireworks AI Inference",
   icon: Flame,
   accent: "text-orange-500",
-  backendUrl: "http://localhost:8000",
+  backendUrl: "http://localhost:8100",  // 81xx Range — siehe PROVIDER_API_CONVENTION.md
   apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: true,
+  capabilities: {
+    hasPool: true,
+    hasRotation: true,
+    hasTerminalRotation: true,   // Browser-basiert → Tauri-Terminal
+    hasApiKeys: true,             // Items sind Fireworks API Keys (fw_xxx)
+  },
   itemNoun: "API Key",
   itemNounPlural: "API Keys",
   passwordLabel: "Fireworks Passwort",
@@ -137,10 +165,16 @@ const GITHUB: ProviderConfig = {
   description: "Automatisierte GitHub Account-Erstellung",
   icon: Github,
   accent: "text-foreground",
-  backendUrl: "http://localhost:8000",
-  apiPrefix: "/api/v1/github",
+  backendUrl: "http://localhost:8103",  // 81xx Range — siehe PROVIDER_API_CONVENTION.md
+  apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: false,
+  capabilities: {
+    hasPool: true,
+    hasRotation: true,
+    hasTerminalRotation: true,   // Browser-basiert
+    hasApiKeys: true,             // Items sind GitHub PATs
+  },
   itemNoun: "Account",
   itemNounPlural: "GitHub Accounts",
   passwordLabel: "Master-Passwort",
@@ -184,10 +218,16 @@ const VERCEL: ProviderConfig = {
   description: "Vercel & v0.app API Tokens",
   icon: Triangle,
   accent: "text-foreground",
-  backendUrl: "http://localhost:8000",
-  apiPrefix: "/api/v1/vercel",
+  backendUrl: "http://localhost:8102",  // 81xx Range — siehe PROVIDER_API_CONVENTION.md
+  apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: false,
+  capabilities: {
+    hasPool: true,
+    hasRotation: true,
+    hasTerminalRotation: true,   // Browser-basiert
+    hasApiKeys: true,             // Items sind Vercel API Tokens
+  },
   itemNoun: "API Token",
   itemNounPlural: "Vercel/v0 Tokens",
   passwordLabel: "Master-Passwort",
@@ -235,10 +275,16 @@ const GMX: ProviderConfig = {
   description: "GMX Email-Alias-Verwaltung",
   icon: Mail,
   accent: "text-blue-500",
-  backendUrl: "http://localhost:8000",
-  apiPrefix: "/api/v1/gmx",
+  backendUrl: "http://localhost:8100",  // 81xx Range — gleicher Port wie Fireworks weil im selben Repo
+  apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: true,
+  capabilities: {
+    hasPool: true,
+    hasRotation: true,
+    hasTerminalRotation: true,   // Browser-basiert
+    hasApiKeys: false,            // Items sind Email-Aliase, keine API Keys
+  },
   itemNoun: "Alias",
   itemNounPlural: "GMX Aliase",
   passwordLabel: "GMX Master-Passwort",
@@ -282,10 +328,18 @@ const HEYPIGGY: ProviderConfig = {
   description: "HeyPiggy Accounts mit GMX-Alias registrieren",
   icon: PiggyBank,
   accent: "text-pink-500",
-  backendUrl: "http://localhost:8002",
+  // ✅ Eigener Port in 81xx Range (HeyPiggy läuft auf 8101, NICHT 8002!)
+  // Vorher: backendUrl: "http://localhost:8002" → Kollision mit Vercel-Rotator
+  backendUrl: "http://localhost:8101",
   apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: true,
+  capabilities: {
+    hasPool: true,
+    hasRotation: true,
+    hasTerminalRotation: true,   // Browser-basiert → Tauri-Terminal
+    hasApiKeys: false,            // Items sind Email+Passwort Credentials, keine API Keys
+  },
 
   itemNoun: "Account",
   itemNounPlural: "HeyPiggy Accounts",
@@ -338,4 +392,39 @@ export const DEFAULT_PROVIDER: ProviderId = "fireworks"
 export function getProvider(id: string | null | undefined): ProviderConfig {
   if (id && id in PROVIDERS) return PROVIDERS[id as ProviderId]
   return PROVIDERS[DEFAULT_PROVIDER]
+}
+
+/**
+ * Get the standard /health URL for a provider.
+ * Used for liveness checks before any other API call.
+ *
+ * @example
+ *   getProviderHealthUrl("heypiggy") // "http://localhost:8101/health"
+ */
+export function getProviderHealthUrl(provider: ProviderConfig): string {
+  return `${provider.backendUrl}/health`
+}
+
+/**
+ * Get the standard /pool/stats URL for a provider.
+ * Used by the Dashboard's stat cards.
+ */
+export function getProviderStatsUrl(provider: ProviderConfig): string {
+  return `${provider.backendUrl}${provider.poolPrefix}/pool/stats`
+}
+
+/**
+ * Get the standard /pool-lease URL for a provider.
+ * Used by the "Holen" button.
+ */
+export function getProviderLeaseUrl(provider: ProviderConfig): string {
+  return `${provider.backendUrl}${provider.poolPrefix}/pool-lease`
+}
+
+/**
+ * Get the standard /rotation/full URL for a provider.
+ * Used by the "Generieren" button (when not using Tauri terminal).
+ */
+export function getProviderRotationUrl(provider: ProviderConfig): string {
+  return `${provider.backendUrl}${provider.apiPrefix}/rotation/full`
 }
