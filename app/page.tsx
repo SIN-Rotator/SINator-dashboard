@@ -38,6 +38,10 @@ export default function DashboardPage() {
   // Treat proxy-leased keys as available — they're held by the proxy for instant
   // chat access, not actually exhausted. Backend's `available` excludes leased.
   const available = backendAvailable + (stats?.leased ?? 0)
+  // Fireworks signs up new accounts with $6 starter credits each. Dead keys
+  // are still real accounts we created — total $ value we extracted from FW.
+  const CREDITS_PER_FIREWORKS_KEY = 6
+  const savings = dead * CREDITS_PER_FIREWORKS_KEY
 
   return (
     <div className="min-h-screen pb-24">
@@ -56,7 +60,7 @@ export default function DashboardPage() {
 
         {/* Friendly stats summary */}
         {connected && total > 0 && (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Card className="p-4 text-center">
               <p className="text-2xl font-bold">{total}</p>
               <p className="text-xs text-muted-foreground mt-1">Gesamt</p>
@@ -68,6 +72,10 @@ export default function DashboardPage() {
             <Card className="p-4 text-center">
               <p className="text-2xl font-bold text-muted-foreground">{dead}</p>
               <p className="text-xs text-muted-foreground mt-1">Verbraucht</p>
+            </Card>
+            <Card className="p-4 text-center">
+              <p className="text-2xl font-bold text-amber-500">${savings.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground mt-1">Ersparnis (6$/Key)</p>
             </Card>
           </div>
         )}
