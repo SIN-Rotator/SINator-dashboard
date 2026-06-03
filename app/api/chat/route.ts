@@ -45,7 +45,7 @@ Komponenten:
 == KEY-STATUS ==
 - available: Nicht benutzt, Krediten vorhanden
 - used: Manuell als verbraucht markiert
-- suspended: Von Fireworks gesperrt (Spending-Limit erreicht, $5 Credits aufgebraucht)
+- suspended: Von Fireworks gesperrt (Spending-Limit erreicht, $6 Credits aufgebraucht)
 
 == URLS ==
 - Dashboard App: http://localhost:3000
@@ -63,9 +63,9 @@ accounts/fireworks/models/deepseek-v4-pro ($1.74/M)
 + Flux Bild-Modelle (flux-1-dev-fp8, flux-1-schnell-fp8, flux-kontext-pro/max)
 
 == BEKANNTE PROBLEME ==
-- Fireworks Account Suspension: $5 Credits pro Account aufgebraucht → suspended
+- Fireworks Account Suspension: $6 Credits pro Account aufgebraucht → suspended
 - GMX Captcha: Bei zu vielen Rotationen → 5-10 Min warten
-- GMX erlaubt nur 1 Alias gleichzeitig (wird automatisch rotiert)
+- GMX erlaubt nur 2 Aliases pro GMX-Domain (wird automatisch rotiert über gmx.de/.net/.com/.eu)
 - Chrome MUSS mit Profile 73 (simoneschulze) starten (andernfalls Session tot)
 - pkill -9 Chrome VERBOTEN (zerstoert SQLite → Session tot)
 - waitForNavigation() bei GMX geht nicht (SPA)
