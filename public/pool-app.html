@@ -16,6 +16,7 @@
     --orange: #f97316;
     --green: #22c55e;
     --red: #ef4444;
+    --blue: #3b82f6;
     --radius: 12px;
     --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
@@ -28,11 +29,13 @@
   h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
   .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
 
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 20px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 20px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 8px; }
   .stat-num { font-size: 1.6rem; font-weight: 800; }
   .stat-num.available { color: var(--green); }
+  .stat-num.inuse { color: var(--blue); }
   .stat-num.used { color: var(--muted); }
+  .stat-num.suspended { color: var(--red); }
   .stat-num.leased { color: var(--orange); }
   .stat-num.total { color: var(--orange); }
   .stat-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -109,6 +112,9 @@
   .loading { display: inline-block; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; margin-right: 4px; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
   .footer { margin-top: 24px; font-size: 0.75rem; color: var(--muted); }
   .footer a { color: var(--orange); text-decoration: none; }
 </style>
@@ -119,12 +125,14 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/><path d="M6 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="m11 7-3 5h4l-3 5"/><line x1="22" x2="22" y1="11" y2="13"/></svg>
   </div>
   <h1>SINator Pool</h1>
-  <p class="sub" id="poolStatus">Unser gemeinsamer Key-Pool. Bei Rate-Limit wird automatisch gewechselt.</p>
+  <p class="sub" id="poolStatus"><span class="live-dot"></span>Lädt…</p>
 
   <div class="stats" id="stats">
     <div class="stat"><div class="stat-num total" id="totalKeys">-</div><div class="stat-label">Gesamt</div></div>
     <div class="stat"><div class="stat-num available" id="availKeys">-</div><div class="stat-label">Verfügbar</div></div>
+    <div class="stat"><div class="stat-num inuse" id="inUseKeys">-</div><div class="stat-label">In Use</div></div>
     <div class="stat"><div class="stat-num used" id="usedKeys">-</div><div class="stat-label">Benutzt</div></div>
+    <div class="stat"><div class="stat-num suspended" id="suspendedKeys">-</div><div class="stat-label">Suspended</div></div>
     <div class="stat"><div class="stat-num leased" id="leasedKeys">-</div><div class="stat-label">Gemietet</div></div>
   </div>
 
@@ -132,12 +140,12 @@
     <div class="config-title">OpenAI-kompatibler Endpunkt</div>
     <div class="config-row">
       <span class="config-label">baseURL</span>
-      <code class="config-value" id="configUrl">https://sinator.delqhi.com/inference/v1</code>
+      <code class="config-value" id="configUrl">https://sinatorpool-router.delqhi.com/inference/v1</code>
       <button class="copy-btn" onclick="copyText('configUrl')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     </div>
     <div class="config-row">
       <span class="config-label">apiKey</span>
-      <code class="config-value" id="configKey"><DEIN_API_KEY></code>
+      <code class="config-value" id="configKey">7avN1KkfInNqcOMn2CtwLTvx</code>
       <button class="copy-btn" onclick="copyText('configKey')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
     </div>
   </div>
@@ -148,7 +156,7 @@
   </button>
 
   <div class="key-card" id="keyCard">
-    <div class="label">✅ Dein API Key</div>
+    <div class="label">Dein API Key</div>
     <div class="key-display">
       <span class="key-text" id="keyText"></span>
       <button class="copy-btn" onclick="copyKey()" id="copyBtn">
@@ -156,9 +164,9 @@
       </button>
     </div>
     <div class="usage">
-      Konfiguration für dein Tool:
+      Konfiguration fuer dein Tool:
       <code><span class="comment"># OpenAI-kompatibler Endpunkt</span>
-baseURL: https://sinator.delqhi.com/inference/v1
+baseURL: https://sinatorpool-router.delqhi.com/inference/v1
 apiKey: <span id="usageKey"></span></code>
     </div>
   </div>
@@ -168,16 +176,17 @@ apiKey: <span id="usageKey"></span></code>
   </div>
 
   <div class="footer">
-    Läuft auf <a href="https://sinator.delqhi.com">sinator.delqhi.com</a> · Pool wird live aktualisiert
+    <span class="live-dot"></span>Live (3s Refresh) · <a href="https://sinator.delqhi.com">sinator.delqhi.com</a>
   </div>
 </div>
 
 <script>
 const POOL_URL = "https://sinator.delqhi.com"
-const AUTH_TOKEN = "<DEIN_API_KEY>"
+const API_PREFIX = "/api/v1"
+const AUTH_TOKEN = "7avN1KkfInNqcOMn2CtwLTvx"
 
 async function api(path) {
-  const r = await fetch(POOL_URL + path, {
+  const r = await fetch(POOL_URL + API_PREFIX + path, {
     headers: { "Authorization": "Bearer " + AUTH_TOKEN }
   })
   if (!r.ok) {
@@ -189,19 +198,22 @@ async function api(path) {
 
 async function refreshStatus() {
   try {
-    const s = await api("/pool-status")
-    const pool = s.pool || {}
-    document.getElementById("totalKeys").textContent = pool.total ?? "-"
-    document.getElementById("availKeys").textContent = pool.available ?? "-"
-    document.getElementById("usedKeys").textContent = pool.used ?? "-"
-    document.getElementById("leasedKeys").textContent = pool.leased ?? "-"
-    if (pool.available > 0) {
-      document.getElementById("poolStatus").textContent = pool.available + " Keys verfügbar"
-    } else if (pool.total > 0) {
-      document.getElementById("poolStatus").textContent = "⚠️ Pool ist leer — warte auf neue Keys"
+    const s = await api("/pool/stats")
+    document.getElementById("totalKeys").textContent = s.total ?? "-"
+    document.getElementById("availKeys").textContent = s.available ?? "-"
+    document.getElementById("inUseKeys").textContent = s.active_in_use ?? 0
+    document.getElementById("usedKeys").textContent = s.used ?? "-"
+    document.getElementById("suspendedKeys").textContent = s.suspended ?? "-"
+    document.getElementById("leasedKeys").textContent = s.leased ?? "-"
+    const avail = s.available ?? 0
+    const inUse = s.active_in_use ?? 0
+    if (avail > 0) {
+      document.getElementById("poolStatus").innerHTML = '<span class="live-dot"></span>' + avail + ' Keys verfuegbar · ' + inUse + ' aktiv'
+    } else if (s.total > 0) {
+      document.getElementById("poolStatus").innerHTML = '<span class="live-dot" style="background:var(--red)"></span>Pool ist leer — warte auf neue Keys'
     }
   } catch (e) {
-    document.getElementById("poolStatus").textContent = "❌ Pool nicht erreichbar"
+    document.getElementById("poolStatus").innerHTML = '<span class="live-dot" style="background:var(--red)"></span>Pool nicht erreichbar'
   }
 }
 
@@ -213,10 +225,10 @@ async function getKey() {
   ec.classList.remove("show")
 
   btn.disabled = true
-  btn.innerHTML = '<svg class="loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Key wird geholt…'
+  btn.innerHTML = '<svg class="loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Key wird geholt...'
 
   try {
-    const data = await api("/pool-lease")
+    const data = await api("/pool/lease")
     document.getElementById("keyText").textContent = data.api_key
     document.getElementById("usageKey").textContent = data.api_key
     kc.classList.add("show")
@@ -258,7 +270,7 @@ async function copyText(elId) {
 }
 
 refreshStatus()
-setInterval(refreshStatus, 10000)
+setInterval(refreshStatus, 3000)
 </script>
 </body>
 </html>
