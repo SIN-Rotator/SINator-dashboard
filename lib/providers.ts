@@ -75,7 +75,7 @@ const FIREWORKS: ProviderConfig = {
   description: "API Keys für Fireworks AI Inference",
   icon: Flame,
   accent: "text-orange-500",
-  backendUrl: "http://localhost:8100",  // 81xx Range — siehe PROVIDER_API_CONVENTION.md
+  backendUrl: "http://localhost:8000",  // v3 main toolbox — siehe PROVIDER_API_CONVENTION.md
   apiPrefix: "/api/v1",
   poolPrefix: "/api/v1",
   available: true,
