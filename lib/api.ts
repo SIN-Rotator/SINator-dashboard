@@ -408,6 +408,40 @@ export async function getConfig(apiPrefix: string, backendUrl?: string): Promise
   return handleJson(r) as Promise<ConfigData>
 }
 
+// === FreeModel Pool API (localhost:8787) ===
+
+export interface FreeModelKey {
+  key: string
+  requests: number
+  tokens: number
+  in_use: number
+  status: "active" | "cooling"
+  cool_until: string | null
+  cools_in_ms: number
+}
+
+export interface FreeModelPoolStatus {
+  now: string
+  keys: FreeModelKey[]
+  active: number
+  total: number
+}
+
+export interface FreeModelHealth {
+  status: string
+}
+
+export async function getFreeModelHealth(backendUrl: string): Promise<FreeModelHealth> {
+  const r = await fetch(`${backendUrl}/healthz`, { cache: "no-store" })
+  if (!r.ok) throw new Error(`${r.status}`)
+  return { status: "ok" }
+}
+
+export async function getFreeModelPoolStatus(backendUrl: string): Promise<FreeModelPoolStatus> {
+  const r = await fetch(`${backendUrl}/pool/status`, { cache: "no-store" })
+  return handleJson<FreeModelPoolStatus>(r)
+}
+
 export async function saveConfig(
   apiPrefix: string,
   data: { gmx_email: string; gmx_password: string; fireworks_password: string },

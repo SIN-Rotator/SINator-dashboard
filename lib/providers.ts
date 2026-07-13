@@ -1,9 +1,9 @@
 // Provider-Registry: zentrale Konfiguration für alle Rotator-Typen
 // Docs: docs/PROVIDER_API_CONVENTION.md — JEDER neue Provider MUSS diese API erfüllen
 import type { ComponentType } from "react"
-import { Flame, Github, Triangle, Mail, PiggyBank } from "lucide-react"
+import { Flame, Github, Triangle, Mail, PiggyBank, Zap } from "lucide-react"
 
-export type ProviderId = "fireworks" | "github" | "vercel" | "gmx" | "heypiggy"
+export type ProviderId = "fireworks" | "github" | "vercel" | "gmx" | "heypiggy" | "freemodel"
 
 export interface UsageSnippets {
   curl?: string
@@ -424,15 +424,69 @@ const HEYPIGGY: ProviderConfig = {
   ],
 }
 
+const FREEMODEL: ProviderConfig = {
+  id: "freemodel",
+  label: "FreeModel.dev",
+  shortLabel: "FreeModel",
+  description: "FreeModel.dev Key-Pool Proxy — OpenAI + Claude",
+  icon: Zap,
+  accent: "text-cyan-500",
+  backendUrl: "http://localhost:8787",
+  apiPrefix: "/v1",
+  poolPrefix: "",
+  available: true,
+  capabilities: {
+    hasPool: true,
+    hasRotation: false,
+    hasTerminalRotation: false,
+    hasApiKeys: true,
+  },
+  itemNoun: "API Key",
+  itemNounPlural: "API Keys",
+  passwordLabel: "FreeModel API Key",
+  heroTitle: "Key-Pool Status",
+  heroSubtitle: "Live-Anzeige aller FreeModel Keys mit Cooldown-Timer",
+  successTitle: "FreeModel Key-Pool",
+  faq: [
+    {
+      q: "Was ist der FreeModel Key-Pool?",
+      a: "Ein lokaler Proxy (localhost:8787), der mehrere FreeModel API Keys verwaltet. Er rotiert automatisch bei Rate-Limits (402) und 'Insufficient balance' (401) und kühlt limitierte Keys bis zu deren Reset-Zeit.",
+    },
+    {
+      q: "Wie füge ich neue Keys hinzu?",
+      a: "Keys werden in der .env-Datei des Pool-Proxies eingetragen (kommasepariert). Der Pool übernimmt neue Keys per Hot-Reload innerhalb von 15 Sekunden — kein Restart nötig.",
+    },
+    {
+      q: "Welche Modelle werden unterstützt?",
+      a: "OpenAI: gpt-5.6-terra, gpt-5.5, gpt-5.4. Claude: claude-sonnet-5, claude-fable-5, claude-opus-4-8. Der Pool leitet an api.freemodel.dev (OpenAI) und cc.freemodel.dev (Claude) weiter.",
+    },
+    {
+      q: "Was bedeutet 'cooling'?",
+      a: "Der Key hat ein Rate-Limit (402) oder 'Insufficient balance' (401) erhalten und ist vorübergehend pausiert. Er wird automatisch wieder aktiviert, wenn die Cooldown-Zeit abläuft.",
+    },
+    {
+      q: "Was bedeutet 'Access Denied'?",
+      a: "cc.freemodel.dev akzeptiert nur den offiziellen Claude Code Client. Das ist normal für Direkt-Tests — durch den Pool mit echtem Claude Code funktioniert es.",
+    },
+  ],
+  chatSystemPrompt: `Du bist der Hilfe-Assistent für den FreeModel Key-Pool. Antworte freundlich und kurz auf Deutsch. Der Pool ist ein Proxy auf localhost:8787, der mehrere FreeModel API Keys verwaltet, bei Rate-Limits rotiert und Keys automatisch kühlt/reaktiviert.`,
+  quickFacts: [
+    { label: "Auto-Rotation", desc: "bei 401/402/429" },
+    { label: "Hot-Reload", desc: "Keys in 15s" },
+    { label: "OpenAI+Claude", desc: "beide Routen" },
+  ],
+}
+
 export const PROVIDERS: Record<ProviderId, ProviderConfig> = {
   fireworks: FIREWORKS,
   github: GITHUB,
   vercel: VERCEL,
   gmx: GMX,
   heypiggy: HEYPIGGY,
+  freemodel: FREEMODEL,
 }
 
-export const PROVIDER_LIST: ProviderConfig[] = [FIREWORKS, HEYPIGGY, GITHUB, VERCEL, GMX]
+export const PROVIDER_LIST: ProviderConfig[] = [FIREWORKS, HEYPIGGY, FREEMODEL, GITHUB, VERCEL, GMX]
 
 export const DEFAULT_PROVIDER: ProviderId = "fireworks"
 

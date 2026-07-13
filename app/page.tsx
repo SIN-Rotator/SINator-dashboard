@@ -7,7 +7,9 @@ import { GetKeyHero } from "@/components/get-key-hero"
 import { KeyTable } from "@/components/key-table"
 import { KeyHistoryCard } from "@/components/key-history-card"
 import { PoolWarning } from "@/components/pool-warning"
+import { FreeModelPoolStats } from "@/components/freemodel-pool-stats"
 import { useSinator } from "@/hooks/use-sinator"
+import { useProvider } from "@/components/provider-context"
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,9 +21,12 @@ import { ChevronDown, Settings2, KeyRound, RefreshCw } from "lucide-react"
 
 export default function DashboardPage() {
   const { health, stats, connected, refresh } = useSinator()
+  const { provider } = useProvider()
   const [advancedOpen, setAdvancedOpen] = React.useState(false)
   const [refreshing, setRefreshing] = React.useState(false)
   const [historyTick, setHistoryTick] = React.useState(0)
+
+  const isFreeModel = provider.id === "freemodel"
 
   async function handleRefresh() {
     setRefreshing(true)
@@ -47,6 +52,10 @@ export default function DashboardPage() {
     <div className="min-h-screen pb-24">
       <Header />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12 space-y-6">
+        {isFreeModel ? (
+          <FreeModelPoolStats backendUrl={provider.backendUrl} />
+        ) : (
+          <>
         <PoolWarning available={available} />
 
         <GetKeyHero
@@ -124,8 +133,10 @@ export default function DashboardPage() {
             </p>
           </CollapsibleContent>
         </Collapsible>
+          </>
+        )}
       </main>
-      <StatusBar health={health} stats={stats} connected={connected} />
+      {!isFreeModel && <StatusBar health={health} stats={stats} connected={connected} />}
     </div>
   )
 }
