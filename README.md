@@ -94,3 +94,9 @@ Provider-Switcher im Header.
 ---
 
 *Stand: 2026-05-31 | V15.4 | [SINator-FireworksAI](https://github.com/SIN-Rotator/SINator-FireworksAI) Pool: 235 Keys*
+
+## Related Repos
+
+- [SINator-freemodel.dev-pool](https://github.com/SIN-Rotator/SINator-freemodel.dev-pool) — FreeModel Key-Pool Proxy (localhost:8787, rotates FreeModel keys)
+- [cc-freemodels.dev](https://github.com/SIN-Claude-Code/cc-freemodels.dev) — Claude Code via FreeModel (Anthropic Route)
+- [codex-freemodels.dev](https://github.com/SIN-Codex/codex-freemodels.dev) — Codex via FreeModel (OpenAI Route)
